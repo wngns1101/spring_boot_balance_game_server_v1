@@ -1,0 +1,16 @@
+spring:
+  config:
+    import:
+      - application-mysql.yml
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate:
+      sql: debug
+      type: trace
