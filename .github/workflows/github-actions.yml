@@ -43,7 +43,6 @@ jobs:
         run: ./gradlew build -x test
 
       - name: Docker build & push to main
-        if: contains(github.ref, 'main')
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f DockerFile -t ${{ secrets.DOCKER_USERNAME }}/balance-game-server .
@@ -52,7 +51,6 @@ jobs:
       - name: Deploy to main
         uses: appleboy/ssh-action@v0.1.4
         id: deploy-main
-        if: contains(github.ref, 'main')
         with:
           host: ${{ secrets.HOST_MAIN }} # EC2 퍼블릭 IPv4 DNS
           username: ${{secrets.USER_NAME}}
