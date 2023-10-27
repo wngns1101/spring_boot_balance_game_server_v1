@@ -2,8 +2,8 @@ name: CI/CD balance game
 
 # push 일 때 수행
 on:
-  push:
-    branch:
+  pull_request:
+    branches:
       - main
 
 # workflow 읽기만 설정
