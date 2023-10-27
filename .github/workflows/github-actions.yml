@@ -32,7 +32,6 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: make application-mysql.yml
-        if: contains(github.ref, 'main')
         run: |
           cd ./src/main/resources
           touch ./application-mysql.yml
