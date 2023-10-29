@@ -58,7 +58,7 @@ jobs:
           script: |
             docker stop balance-game-server
             docker rm balance-game-server
-            docker rmi balance-game-server
+            docker rmi ${{secrets.DOCKER_USERNAME}}/balance-game-server
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/balance-game-server
             sudo docker run -d -p 8080:8080 --name balance-game-server ${{ secrets.DOCKER_USERNAME }}/balance-game-server
             sudo docker image prune -f
