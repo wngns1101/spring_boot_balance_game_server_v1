@@ -1,16 +1,13 @@
 package com.example.balanceGame.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.PostMapping;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name="회원")
+@Tag(name="게시글 신고")
+@Slf4j
 @RestController
-@RequestMapping("/member")
-public class memberController {
-    @PostMapping("/join")
-    public void join() {
-
-    }
+@RequestMapping("/boardReport")
+public class BoardReportController {
 }
