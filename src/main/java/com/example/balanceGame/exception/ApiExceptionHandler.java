@@ -11,4 +11,9 @@ public class ApiExceptionHandler {
     public ResponseEntity<Object> duplicateUserException(DuplicateUserException ex) {
         return new ResponseEntity<>(Message.DUPLICATE_USER, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> EncryptionException(EncryptionException ex) {
+        return new ResponseEntity<>(Message.ENCRYPTION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
