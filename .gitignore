@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 
 application-mysql.yml
+application-jwt.yml
 
 ### STS ###
 .apt_generated

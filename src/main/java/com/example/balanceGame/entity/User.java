@@ -20,11 +20,14 @@ public class User {
     @Column(name = "user_key")
     private long userKey;
 
-    // 이름
-    private String userName;
+    // 아이디
+    private String userId;
 
     // 비밀번호
     private String userPw;
+
+    // 이름
+    private String userName;
 
     // 이메일
     private String userEmail;

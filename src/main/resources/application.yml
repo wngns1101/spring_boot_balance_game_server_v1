@@ -2,6 +2,7 @@ spring:
   config:
     import:
       - application-mysql.yml
+      - application-jwt.yml
   jpa:
     hibernate:
       ddl-auto: none
