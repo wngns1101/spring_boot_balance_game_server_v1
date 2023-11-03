@@ -14,17 +14,20 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User{
     // 기본키 생성 전략
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_key")
     private long userKey;
 
-    // 이름
-    private String userName;
+    // 아이디
+    private String userId;
 
     // 비밀번호
     private String userPw;
+
+    // 이름
+    private String userName;
 
     // 이메일
     private String userEmail;

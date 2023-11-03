@@ -16,15 +16,24 @@ import static com.example.balanceGame.entity.QUser.user;
 @RequiredArgsConstructor
 public class UserRepository {
     private final EntityManager em;
-    public User findByUserEmail(String name) {
+    // 이메일 엔티티 조회
+    public User findByUserEmail(String email) {
         JPAQueryFactory qm = new JPAQueryFactory(em);
-        return qm.selectFrom(user).where(user.userEmail.eq(name)).fetchOne();
+        return qm.selectFrom(user).where(user.userEmail.eq(email)).fetchOne();
     }
 
-    public User findByUserId(long id) {
+    // 아이디 엔티티 조회
+    public User findByUserId(String userId) {
+        JPAQueryFactory qm = new JPAQueryFactory(em);
+        return qm.selectFrom(user).where(user.userId.eq(userId)).fetchOne();
+    }
+
+    // user key 엔티티 조회
+    public User findByUserKey(long id) {
         return em.find(User.class, id);
     }
 
+    // 회원가입 메서드
     public ResponseEntity join(User user) {
         try {
             em.persist(user);

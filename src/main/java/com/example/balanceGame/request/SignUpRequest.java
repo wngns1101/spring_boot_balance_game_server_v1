@@ -1,24 +1,21 @@
 package com.example.balanceGame.request;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @Builder
-public class UserRequest {
+public class SignUpRequest {
     // 이름
-    private String userName;
+    private String userId;
 
     // 비밀번호
     private String userPw;
+
+    // 이름
+    private String userName;
 
     // 이메일
     private String userEmail;
