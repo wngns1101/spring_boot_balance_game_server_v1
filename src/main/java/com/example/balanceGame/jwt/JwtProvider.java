@@ -1,6 +1,9 @@
 package com.example.balanceGame.jwt;
 
+import com.example.balanceGame.entity.User;
+import com.example.balanceGame.exception.NotFoundException;
 import com.example.balanceGame.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -8,12 +11,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -48,11 +53,20 @@ public class JwtProvider {
                 .compact();
     }
 
-//    // 토큰에 있는 user로 엔티티 조회하는 메서드
-//    public Authentication getAuthentication(String token) {
-//        String userName = Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token).getBody().getSubject();
-//        User findUser = userRepository.findByUserId(userName);
-//    }
+    // 토큰에 있는 user로 엔티티 조회하는 메서드
+    public User getUserFromToken(String token) {
+        // 유저 이름 추출
+        String userId = getUsernameFromToken(token);
+
+        // 추출한 이름으로 유저 엔티티 조회
+        User byUserId = userRepository.findByUserId(userId);
+
+        if (byUserId != null) {
+            return byUserId;
+        }else{
+            throw new NotFoundException();
+        }
+    }
 
     // 토큰에 있는 유저 가져오는 메서드
     public String getUsernameFromToken(String token) {
@@ -73,5 +87,15 @@ public class JwtProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public Authentication getAuthentication(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secret)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return new UsernamePasswordAuthenticationToken(claims, token, List.of(new SimpleGrantedAuthority("USER")));
     }
 }

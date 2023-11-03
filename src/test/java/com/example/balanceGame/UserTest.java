@@ -30,8 +30,9 @@ public class UserTest {
     @Rollback(value = false)
     public void 회원가입테스트() {
         SignUpRequest request = SignUpRequest.builder()
+                .userId("test")
                 .userName("테스트")
-                .userPw("1234")
+                .userPw("zzz")
                 .userEmail("test1@naver.com")
                 .build();
 

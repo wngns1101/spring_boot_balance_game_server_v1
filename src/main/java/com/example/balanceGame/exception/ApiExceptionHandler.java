@@ -16,4 +16,9 @@ public class ApiExceptionHandler {
     public ResponseEntity<Object> EncryptionException(EncryptionException ex) {
         return new ResponseEntity<>(Message.ENCRYPTION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> NotFoundException(NotFoundException ex) {
+        return new ResponseEntity<>(Message.NOT_FOUND_USER, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

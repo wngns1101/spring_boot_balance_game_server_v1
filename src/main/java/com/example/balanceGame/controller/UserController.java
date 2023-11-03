@@ -31,4 +31,8 @@ public class UserController {
         return userService.login(signInRequest);
     }
 
+    @PostMapping("/test")
+    public String test() {
+        return "test";
+    }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User{
     // 기본키 생성 전략
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_key")

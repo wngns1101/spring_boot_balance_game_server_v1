@@ -4,6 +4,7 @@ import com.example.balanceGame.entity.User;
 import com.example.balanceGame.exception.DuplicateUserException;
 import com.example.balanceGame.exception.EncryptionException;
 import com.example.balanceGame.exception.Message;
+import com.example.balanceGame.exception.NotFoundException;
 import com.example.balanceGame.jwt.JwtProvider;
 import com.example.balanceGame.repository.UserRepository;
 import com.example.balanceGame.request.SignInRequest;
@@ -26,6 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+
     // 회원가입 메서드
     @Transactional
     public ResponseEntity join(SignUpRequest signUpRequest) {
@@ -54,13 +56,30 @@ public class UserService {
         return userRepository.join(joinUser);
     }
 
+    // 로그인 메서드
     public ResponseEntity<SignInResponse> login(SignInRequest signInRequest) {
+        // 아이디로 유저 조회
         User findUser = userRepository.findByUserId(signInRequest.getUserId());
+
+        // 조회한 유저가 없으면 예외 리턴
+        if (findUser == null) {
+            throw new NotFoundException();
+        }
+
+        // 비밀번호가 저장된 것과 일치하지 않으면 예외 리턴
+        if (!passwordEncoder.matches(signInRequest.getUserPw(), findUser.getUserPw())) {
+            throw new EncryptionException();
+        }
+
+        // jwt 생성
         String token = jwtProvider.createToken(findUser.getUserId());
+
+        // response dto 생성
         SignInResponse build = SignInResponse.builder()
                 .message(Message.LOGIN_SUCCESS)
                 .token(token)
                 .build();
+
         return new ResponseEntity<>(build, HttpStatus.OK);
     }
 
