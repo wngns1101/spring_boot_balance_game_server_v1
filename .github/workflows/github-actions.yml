@@ -38,6 +38,13 @@ jobs:
           echo "${{secrets.MYSQL}}" > ./application-mysql.yml
         shell: bash
 
+      - name: make application-jwt.yml
+        run: |
+          cd ./src/main/resources
+          touch ./application-jwt.yml
+          echo "${{secrets.JWT}}" > ./application-jwt.yml
+        shell: bash
+
       - name: Build with Gradle
         run: ./gradlew build -x test
 
