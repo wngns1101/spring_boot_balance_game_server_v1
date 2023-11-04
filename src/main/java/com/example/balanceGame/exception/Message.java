@@ -12,5 +12,6 @@ public class Message {
     public static final String DELETE_USER = "회원 탈퇴 성공";
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 에러";
     public static final String DB_ERROR = "데이터베이스 에러";
-    public static final String ENCRYPTION_ERROR = "비밀번호 암호화 에러";
+    public static final String PASSWORD_MISMATCH = "비밀번호가 일치하지 않습니다.";
+    public static final String UPDATE_PW = "비밀번호 수정에 성공했습니다.";
 }

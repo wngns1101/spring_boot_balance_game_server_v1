@@ -13,8 +13,8 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<Object> EncryptionException(EncryptionException ex) {
-        return new ResponseEntity<>(Message.ENCRYPTION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Object> EncryptionException(PasswordMismatchException ex) {
+        return new ResponseEntity<>(Message.PASSWORD_MISMATCH, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler

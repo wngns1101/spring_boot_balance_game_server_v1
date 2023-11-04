@@ -1,5 +1,6 @@
 package com.example.balanceGame.entity;
 
+import com.example.balanceGame.request.ModifyRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,4 +53,14 @@ public class User{
     // 신고 내역
     @OneToMany(mappedBy = "user")
     private List<BoardReport> reports;
+
+    public void modifyUser(ModifyRequest modifyRequest) {
+        this.userId = modifyRequest.getUserId();
+        this.userEmail = modifyRequest.getUserEmail();
+        this.userName = modifyRequest.getUserName();
+    }
+
+    public void modifyPw(String modifyPw) {
+        this.userPw = modifyPw;
+    }
 }

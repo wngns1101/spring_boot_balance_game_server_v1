@@ -24,41 +24,50 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     private final JwtProvider jwtProvider;
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludePath = {"/swagger-ui.html", "/swagger-ui/index.html", "/swagger-ui/swagger-ui.css", "/swagger-ui*/**",
-                "/v3/api-docs", "/v3/api-docs/**",
-                "/swagger-resources/**",
+        String[] excludePath = {
                 "/swagger-ui.html",
-                "/swagger-ui/**",
-                "/v3/**",
+                "/swagger-ui/index.html",
+                "/swagger-ui/index.css",
                 "/swagger-ui/swagger-ui.css",
+                "/v3/api-docs",
                 "/swagger-ui/swagger-ui-standalone-preset.js",
                 "/swagger-ui/swagger-ui-bundle.js",
                 "/swagger-ui/swagger-initializer.js",
                 "/swagger-ui/favicon-32x32.png",
                 "/swagger-ui/favicon-16x16.png",
-                "/v3/swagger-resources", "/v3/swagger-resources/**", "/user/join", "/user/login"};
+                "/user/join",
+                "/user/login"};
 
         // 제외할 url 설정
         String path = request.getRequestURI();
-        return Arrays.stream(excludePath).anyMatch(path::startsWith);
+        if (Arrays.stream(excludePath).anyMatch(path::startsWith)) {
+            return true; // Swagger 요청이면 필터링하지 않음
+        }
+
+        return false;
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (shouldNotFilter(request)) {
             filterChain.doFilter(request, response);
+        }else{
+            // Authentication 헤더 추출
+            String token = jwtProvider.resolveToken(request);
+
+            // 토큰이 헤더에 담겨있을 때
+            if (token != null) {
+                // Bearer 분리
+                String[] slice = token.split(" ");
+
+                // 인증 객체 생성
+                Authentication authentication = jwtProvider.getAuthentication(slice[1]);
+
+                // 저장
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                filterChain.doFilter(request, response);
+            } else {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 Forbidden 에러 응답
+            }
         }
-        // Authentication 헤더 추출
-        String token = jwtProvider.resolveToken(request);
-
-        // 헤더가 없거나 토큰이 정상인지 검증
-        // Bearer 분리
-        String[] slice = token.trim().split(" ");
-
-        // 인증 객체 생성
-        Authentication authentication = jwtProvider.getAuthentication(slice[1]);
-
-        // 저장
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        filterChain.doFilter(request, response);
     }
 }
