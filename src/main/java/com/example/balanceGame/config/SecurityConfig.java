@@ -24,18 +24,11 @@ public class SecurityConfig {
                 // rest api 서버는 stateless하기 때문에 인증 정보를 보관하지 않는다. 따라서 csrf 코드를 작성할 필요가 없기 때문에 disable을 한다
                 .csrf().disable()
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers("/v3/api-docs",
-                                        "/swagger-resources/**",
-                                        "/swagger-ui.html",
+                        requests.requestMatchers(
                                         "/swagger-ui/**",
                                         "/v3/**",
-                                        "/swagger-ui/swagger-ui.css",
-                                        "/swagger-ui/swagger-ui-standalone-preset.js",
-                                        "/swagger-ui/swagger-ui-bundle.js",
-                                        "/swagger-ui/swagger-initializer.js",
-                                        "/swagger-ui/favicon-32x32.png",
-                                        "/swagger-ui/favicon-16x16.png",
-                                        "/user/login", "/user/join").permitAll()
+                                        "/user/login",
+                                        "/user/join").permitAll()
                                 .anyRequest().authenticated()
                 )
                 // 세션 안 사용하므로 STATELESS 설정

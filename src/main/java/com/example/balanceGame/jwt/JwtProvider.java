@@ -29,7 +29,7 @@ public class JwtProvider {
     private String secret;
 
     // 토큰 생성 메서드
-    public String createToken(String userName) {
+    public String createToken(String userId) {
         // 현재 날짜, 시간
         Date nowDate = new Date();
 
@@ -42,7 +42,7 @@ public class JwtProvider {
         // 토큰 생성
         return Jwts.builder()
                 // jwt 인증할 식별자
-                .setSubject(userName)
+                .setSubject(userId)
                 // 발급 시간
                 .setIssuedAt(nowDate)
                 // 만료 시간
@@ -95,7 +95,7 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
-        return new UsernamePasswordAuthenticationToken(claims, token, List.of(new SimpleGrantedAuthority("USER")));
+        // principal에는 유저 id를 저장한다. credentials는 비밀번호를 의미하지만 이미 사용자가 인증된 토큰에 비밀번호를 노출할 필요는 없다고 생각해 null을 전달한다.
+        return new UsernamePasswordAuthenticationToken(claims.getSubject(), null, List.of(new SimpleGrantedAuthority("USER")));
     }
 }
