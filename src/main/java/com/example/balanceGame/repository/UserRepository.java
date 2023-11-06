@@ -1,6 +1,7 @@
 package com.example.balanceGame.repository;
 
 import com.example.balanceGame.entity.User;
+import com.example.balanceGame.exception.Message;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
@@ -37,7 +38,16 @@ public class UserRepository {
     public ResponseEntity join(User user) {
         try {
             em.persist(user);
-            return new ResponseEntity("회원가입에 성공했습니다.", HttpStatus.OK);
+            return new ResponseEntity(Message.CREATED_USER, HttpStatus.OK);
+        } catch (PersistenceException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity delete(User user) {
+        try {
+            em.remove(user);
+            return new ResponseEntity(Message.DELETE_USER, HttpStatus.OK);
         } catch (PersistenceException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

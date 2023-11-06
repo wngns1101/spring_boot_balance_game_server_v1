@@ -54,12 +54,14 @@ public class User{
     @OneToMany(mappedBy = "user")
     private List<BoardReport> reports;
 
+    // 유저 정보를 수정하는 비즈니스 로직
     public void modifyUser(ModifyRequest modifyRequest) {
         this.userId = modifyRequest.getUserId();
         this.userEmail = modifyRequest.getUserEmail();
         this.userName = modifyRequest.getUserName();
     }
 
+    // 비밀번호를 수정하는 비즈니스 로직
     public void modifyPw(String modifyPw) {
         this.userPw = modifyPw;
     }

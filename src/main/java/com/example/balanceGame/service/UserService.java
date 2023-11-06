@@ -7,11 +7,9 @@ import com.example.balanceGame.exception.Message;
 import com.example.balanceGame.exception.NotFoundException;
 import com.example.balanceGame.jwt.JwtProvider;
 import com.example.balanceGame.repository.UserRepository;
-import com.example.balanceGame.request.ModifyPwRequest;
-import com.example.balanceGame.request.ModifyRequest;
-import com.example.balanceGame.request.SignInRequest;
-import com.example.balanceGame.request.SignUpRequest;
+import com.example.balanceGame.request.*;
 import com.example.balanceGame.response.FindUserResponse;
+import com.example.balanceGame.response.ModifyResponse;
 import com.example.balanceGame.response.SignInResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +81,7 @@ public class UserService {
     }
 
     // 유저 정보 상세 조회 메서드
-    public ResponseEntity<FindUserResponse> findUser(Principal principal) {
+    public ResponseEntity<FindUserResponse> profile(Principal principal) {
         // 유저 조회
         User byUserId = findUser(principal.getName());
 
@@ -100,14 +98,22 @@ public class UserService {
 
     // 수정 메서드
     @Transactional
-    public ResponseEntity modify(ModifyRequest modifyRequest, Principal principal) {
+    public ResponseEntity<ModifyResponse> modify(ModifyRequest modifyRequest, Principal principal) {
         // 유저 정보 조회
         User byUserId = findUser(principal.getName());
 
         // 유저 정보 수정
         byUserId.modifyUser(modifyRequest);
 
-        return new ResponseEntity(Message.UPDATE_USER, HttpStatus.OK);
+        // 토큰 재발급
+        String token = jwtProvider.createToken(byUserId.getUserId());
+
+        ModifyResponse response = ModifyResponse.builder()
+                .message(Message.UPDATE_USER)
+                .token(token)
+                .build();
+
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
     // 비밀번호 수정 메서드
@@ -124,6 +130,20 @@ public class UserService {
         user.modifyPw(passwordEncoder.encode(modifyPwRequest.getModifyPw()));
 
         return new ResponseEntity(Message.UPDATE_PW, HttpStatus.OK);
+    }
+
+    // 회원 삭제 메서드
+    @Transactional
+    public ResponseEntity delete(DeleteRequest deleteRequest, Principal principal) {
+        // 유저 정보 조회
+        User user = findUser(principal.getName());
+
+        // 비빌번호가 데이터베이스에 저장된 비밀번호와 같은지 조회
+        if (!passwordEncoder.matches(deleteRequest.getPw(), user.getUserPw())) {
+            throw new PasswordMismatchException();
+        }
+
+        return userRepository.delete(user);
     }
 
     // 중복 아이디 조회 메서드
