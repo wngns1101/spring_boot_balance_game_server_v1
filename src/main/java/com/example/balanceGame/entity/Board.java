@@ -44,8 +44,11 @@ public class Board {
     // 오른쪽 답안 ex) 짬뽕
     private String rightContent;
 
-    // 선택한 결과값 ex) 왼쪽은 0, 오른쪽은 1
-    private boolean result;
+    // 왼쪽을 누른 count
+    private int leftCount;
+
+    // 오른쪽을 누른 count
+    private int rightCount;
 
     // 작성 시간
     private LocalDateTime boardDate;

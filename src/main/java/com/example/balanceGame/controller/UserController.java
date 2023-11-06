@@ -1,10 +1,8 @@
 package com.example.balanceGame.controller;
 
-import com.example.balanceGame.request.ModifyPwRequest;
-import com.example.balanceGame.request.ModifyRequest;
-import com.example.balanceGame.request.SignInRequest;
-import com.example.balanceGame.request.SignUpRequest;
+import com.example.balanceGame.request.*;
 import com.example.balanceGame.response.FindUserResponse;
+import com.example.balanceGame.response.ModifyResponse;
 import com.example.balanceGame.response.SignInResponse;
 import com.example.balanceGame.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Map;
 
 @Tag(name="회원")
 @Slf4j
@@ -40,15 +39,15 @@ public class UserController {
     }
 
     // 회원 정보 조회 컨트롤러
-    @GetMapping("/findUser")
-    public ResponseEntity<FindUserResponse> findUser(Principal principal) {
+    @GetMapping("/profile")
+    public ResponseEntity<FindUserResponse> profile(Principal principal) {
         log.info("findUser controller");
-        return userService.findUser(principal);
+        return userService.profile(principal);
     }
 
     // 회원 정보 수정 컨트롤러
     @PutMapping("/modify")
-    public ResponseEntity modify(@RequestBody ModifyRequest modifyRequest, Principal principal) {
+    public ResponseEntity<ModifyResponse> modify(@RequestBody ModifyRequest modifyRequest, Principal principal) {
         log.info("modify controller");
         return userService.modify(modifyRequest, principal);
     }
@@ -58,5 +57,12 @@ public class UserController {
     public ResponseEntity modifyPw(@RequestBody ModifyPwRequest modifyPwRequest, Principal principal) {
         log.info("modify Pw controller");
         return userService.modifyPw(modifyPwRequest, principal);
+    }
+
+    // 회원 탈퇴 컨트롤러
+    @PostMapping("/delete")
+    public ResponseEntity delete( @RequestBody DeleteRequest deleteRequest, Principal principal) {
+        log.info("delete controller");
+        return userService.delete(deleteRequest, principal);
     }
 }
