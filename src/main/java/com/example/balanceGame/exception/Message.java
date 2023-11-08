@@ -14,4 +14,6 @@ public class Message {
     public static final String DB_ERROR = "데이터베이스 에러";
     public static final String PASSWORD_MISMATCH = "비밀번호가 일치하지 않습니다.";
     public static final String UPDATE_PW = "비밀번호 수정에 성공했습니다.";
+    public static final String REGIST_BOARD = "게시글 등록에 성공했습니다.";
+    public static final String REGIST_COMMENT = "댓글 등록에 성공했습니다.";
 }

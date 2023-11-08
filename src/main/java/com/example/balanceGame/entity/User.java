@@ -43,16 +43,19 @@ public class User{
     private LocalDateTime deleteDate;
 
     // 작성한 게시글
-    @OneToMany(mappedBy = "user")
-    private List<Board> boards;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_key")
+    private Board board;
 
     // 작성한 댓글
-    @OneToMany(mappedBy = "user")
-    private List<BoardReport> comments;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_key")
+    private BoardReport comment;
 
     // 신고 내역
-    @OneToMany(mappedBy = "user")
-    private List<BoardReport> reports;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "report_key")
+    private BoardReport report;
 
     // 유저 정보를 수정하는 비즈니스 로직
     public void modifyUser(ModifyRequest modifyRequest) {
