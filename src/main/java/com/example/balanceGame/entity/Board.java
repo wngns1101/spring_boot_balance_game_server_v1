@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,15 +24,13 @@ public class Board {
 
     // 좋아요 수를 위한 외래키
     // 초기 생성에는 default 좋아요 null
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "heart_key")
-    private Heart like;
+    @OneToMany(mappedBy = "board")
+    private List<Heart> like;
 
     // 댓글
     // 초기 생성에는 default 좋아요 0
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_key")
-    private Comment comment;
+    @OneToMany(mappedBy = "board")
+    private List<Comment> comment;
 
     // 제목 ex) 짜장면 짬뽕 중 더 좋은 것은?
     private String boardTitle;

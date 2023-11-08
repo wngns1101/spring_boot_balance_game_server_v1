@@ -18,12 +18,12 @@ public class Heart {
     private long heartKey;
 
     // 좋야요 누른 사용자
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_key")
     private User user;
 
     // 좋아요 게시물
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_key")
     private Board board;
 
