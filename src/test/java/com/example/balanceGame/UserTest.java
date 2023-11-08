@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @SpringBootTest
-
 public class UserTest {
 
     @Autowired
@@ -30,91 +29,96 @@ public class UserTest {
 
     @Test
     public void 회원가입테스트() {
-        // 회원가입 정보 생성
-        SignUpRequest request = SignUpRequest.builder()
+        // given
+        SignUpRequest request = SignUpRequest.builder() // 회원가입 정보 생성
                 .userId("test")
                 .userName("테스트")
                 .userPw("zzz")
                 .userEmail("test1@naver.com")
                 .build();
 
-        // 회원가입 진행
-        ResponseEntity join = userService.join(request);
+        // when
+        ResponseEntity join = userService.join(request); // 회원가입 진행
+
+        // then
         assertThat(join.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
     public void 로그인토큰테스트() {
-        // 로그인 정보 생성
-        SignInRequest request = SignInRequest.builder()
+        // given
+        SignInRequest request = SignInRequest.builder() // 로그인 정보 생성
                 .userId("test")
                 .userPw("zzz")
                 .build();
 
-        // 로그인 진행
-        ResponseEntity<SignInResponse> login = userService.login(request);
+        // when
+        ResponseEntity<SignInResponse> login = userService.login(request); // 로그인 진행
 
-        // 토큰 조회
-        log.info(login.getBody().getToken());
-
-        // 토큰 복호화
-        log.info(jwtProvider.getUsernameFromToken(login.getBody().getToken()));
+        // then
+        log.info(login.getBody().getToken()); // 토큰 조회
+        log.info(jwtProvider.getUsernameFromToken(login.getBody().getToken())); // 토큰 복호화
     }
 
     @Test
     public void 정보수정테스트() {
-        // 수정할 정보 생성
-        ModifyRequest modify = ModifyRequest.builder()
+        // given
+        ModifyRequest modify = ModifyRequest.builder() // 수정할 정보 생성
                 .userId("mo")
                 .userEmail("di")
                 .userName("fy")
                 .build();
 
-        // JWT 토큰 있다는 가정하에 사용자 객체 생성
-        Principal principal = () -> "test";
+        Principal principal = () -> "test"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
 
-        // 수정 진행
-        ResponseEntity<ModifyResponse> modify1 = userService.modify(modify, principal);
+        // when
+        ResponseEntity<ModifyResponse> modify1 = userService.modify(modify, principal); // 수정 진행
 
+        // then
         assertThat(modify1.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
     public void 정보조회테스트() {
-        // JWT 토큰 있다는 가정하에 사용자 객체 생성
-        Principal principal = () -> "mo";
+        // given
+        Principal principal = () -> "mo"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
 
-        // 정보 조회 진행
-        ResponseEntity<FindUserResponse> profile = userService.profile(principal);
+        // when
+        ResponseEntity<FindUserResponse> profile = userService.profile(principal); // 정보 조회 진행
 
+        // then
         log.info(String.valueOf(profile.getBody()));
     }
 
     @Test
     public void 비밀번호변경테스트() {
-        // 비밀번호 정보 생성
-        ModifyPwRequest test = ModifyPwRequest.builder().modifyPw("change").currentPw("zzz").build();
+        // given
+        ModifyPwRequest test = ModifyPwRequest.builder()
+                .modifyPw("change")
+                .currentPw("zzz")
+                .build(); // 비밀번호 정보 생성
 
-        // JWT 토큰 있다는 가정하에 사용자 객체 생성
-        Principal principal = () -> "mo";
+        Principal principal = () -> "mo"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
 
-        // 비밀번호 변경 진행
-        ResponseEntity responseEntity = userService.modifyPw(test, principal);
+        // when
+        ResponseEntity responseEntity = userService.modifyPw(test, principal); // 비밀번호 변경 진행
 
+        // then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
     public void 회원삭제() {
-        // 비밀번호 정보 생성
-        DeleteRequest change = DeleteRequest.builder().pw("change").build();
+        // given
+        DeleteRequest change = DeleteRequest.builder() // 비밀번호 정보 생성
+                .pw("change")
+                .build();
+        Principal principal = () -> "mo"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
 
-        // JWT 토큰 있다는 가정하에 사용자 객체 생성
-        Principal principal = () -> "mo";
+        // when
+        ResponseEntity delete = userService.delete(change, principal); // 계정 삭제 진행
 
-        // 계정 삭제 진행
-        ResponseEntity delete = userService.delete(change, principal);
-
+        // then
         assertThat(delete.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }

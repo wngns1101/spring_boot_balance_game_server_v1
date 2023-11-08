@@ -1,7 +1,7 @@
 package com.example.balanceGame.entity;
 
+import com.example.balanceGame.request.CommentRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
     // 기본키 생성 전략
@@ -34,4 +32,16 @@ public class Comment {
 
     // 작성 시간
     private LocalDateTime commentTime;
+
+    public Comment(CommentRequest commentRequest, User user, Board board) {
+        this.board = board;
+        this.user = user;
+        this.commentContent = commentRequest.getCommentContent();
+        this.commentTime = LocalDateTime.now();
+    }
+
+
+    public static Comment createComment(CommentRequest commentRequest, User user, Board board) {
+        return new Comment(commentRequest, user, board);
+    }
 }

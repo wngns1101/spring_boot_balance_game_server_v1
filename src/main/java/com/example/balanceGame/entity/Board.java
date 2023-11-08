@@ -1,18 +1,14 @@
 package com.example.balanceGame.entity;
 
+import com.example.balanceGame.request.BoardRegistRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class Board {
     // 기본키 생성 전략
@@ -26,14 +22,16 @@ public class Board {
     private User user;
 
     // 좋아요 수를 위한 외래키
-    @OneToMany(fetch = FetchType.LAZY)
+    // 초기 생성에는 default 좋아요 null
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "heart_key")
-    private List<Heart> like;
+    private Heart like;
 
     // 댓글
-    @OneToMany(fetch = FetchType.LAZY)
+    // 초기 생성에는 default 좋아요 0
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_key")
-    private List<Comment> comment;
+    private Comment comment;
 
     // 제목 ex) 짜장면 짬뽕 중 더 좋은 것은?
     private String boardTitle;
@@ -45,11 +43,24 @@ public class Board {
     private String rightContent;
 
     // 왼쪽을 누른 count
-    private int leftCount;
+    private int leftCount = 0;
 
     // 오른쪽을 누른 count
-    private int rightCount;
+    private int rightCount = 0;
 
     // 작성 시간
     private LocalDateTime boardDate;
+
+    public Board(BoardRegistRequest boardRegistRequest, User user) {
+        this.user = user;
+        this.boardTitle = boardRegistRequest.getBoardTitle();
+        this.leftContent = boardRegistRequest.getLeftContent();
+        this.rightContent = boardRegistRequest.getRightContent();
+        this.boardDate = LocalDateTime.now();
+    }
+
+
+    public static Board createBoard(BoardRegistRequest boardRegistRequest, User user) {
+        return new Board(boardRegistRequest, user);
+    }
 }
