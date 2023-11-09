@@ -2,7 +2,7 @@ name: CI/CD balance game
 
 # push 일 때 수행
 on:
-  pull_request:
+  push:
     branches:
       - main
 
