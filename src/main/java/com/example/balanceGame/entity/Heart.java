@@ -21,10 +21,4 @@ public class Heart {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_key")
     private User user;
-
-    // 좋아요 게시물
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_key")
-    private Board board;
-
 }

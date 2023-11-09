@@ -24,8 +24,8 @@ public class Board {
 
     // 좋아요 수를 위한 외래키
     // 초기 생성에는 default 좋아요 null
-    @OneToMany(mappedBy = "board")
-    private List<Heart> like;
+    @OneToOne(mappedBy = "board")
+    private Heart heart;
 
     // 댓글
     // 초기 생성에는 default 좋아요 0
