@@ -1,9 +1,5 @@
-package com.example.balanceGame.request;
+package com.example.balanceGame.controller.http.request;
 
-import com.example.balanceGame.entity.Comment;
-import com.example.balanceGame.entity.Heart;
-import com.example.balanceGame.entity.User;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

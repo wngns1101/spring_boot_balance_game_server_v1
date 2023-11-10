@@ -1,6 +1,6 @@
 package com.example.balanceGame.entity;
 
-import com.example.balanceGame.request.ModifyRequest;
+import com.example.balanceGame.controller.http.request.ModifyRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +19,7 @@ public class User{
     // 기본키 생성 전략
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_key")
-    private long userKey;
+    private Long userKey;
 
     // 아이디
     private String userId;

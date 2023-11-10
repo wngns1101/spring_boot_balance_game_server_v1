@@ -29,7 +29,7 @@ public class JwtProvider {
     private String secret;
 
     // 토큰 생성 메서드
-    public String createToken(String userId) {
+    public String createToken(Long userKey) {
         // 현재 날짜, 시간
         Date nowDate = new Date();
 
@@ -42,7 +42,7 @@ public class JwtProvider {
         // 토큰 생성
         return Jwts.builder()
                 // jwt 인증할 식별자
-                .setSubject(userId)
+                .setSubject(String.valueOf(userKey))
                 // 발급 시간
                 .setIssuedAt(nowDate)
                 // 만료 시간
@@ -56,10 +56,10 @@ public class JwtProvider {
     // 토큰에 있는 user로 엔티티 조회하는 메서드
     public User getUserFromToken(String token) {
         // 유저 이름 추출
-        String userId = getUsernameFromToken(token);
+        Long userKey = Long.parseLong(getUsernameFromToken(token));
 
         // 추출한 이름으로 유저 엔티티 조회
-        User byUserId = userRepository.findByUserId(userId);
+        User byUserId = userRepository.findByUserKey(userKey);
 
         if (byUserId != null) {
             return byUserId;

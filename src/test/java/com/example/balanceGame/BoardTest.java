@@ -1,8 +1,8 @@
 package com.example.balanceGame;
 
-import com.example.balanceGame.request.BoardRegistRequest;
-import com.example.balanceGame.response.BoardDetailResponse;
-import com.example.balanceGame.response.FindAllByDateResponse;
+import com.example.balanceGame.controller.http.request.BoardRegistRequest;
+import com.example.balanceGame.controller.http.response.BoardDetailResponse;
+import com.example.balanceGame.controller.http.response.FindAllByDateResponse;
 import com.example.balanceGame.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

@@ -8,10 +8,10 @@ import com.example.balanceGame.exception.NotFoundException;
 import com.example.balanceGame.repository.BoardRepository;
 import com.example.balanceGame.repository.CommentRepository;
 import com.example.balanceGame.repository.UserRepository;
-import com.example.balanceGame.request.BoardRegistRequest;
+import com.example.balanceGame.controller.http.request.BoardRegistRequest;
 import com.example.balanceGame.dto.BoardHeartDto;
-import com.example.balanceGame.response.BoardDetailResponse;
-import com.example.balanceGame.response.FindAllByDateResponse;
+import com.example.balanceGame.controller.http.response.BoardDetailResponse;
+import com.example.balanceGame.controller.http.response.FindAllByDateResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +34,7 @@ public class BoardService {
     @Transactional
     public ResponseEntity regist(BoardRegistRequest boardRegistRequest, Principal principal) {
         // 사용자 추출
-        User user = findUser(principal.getName());
+        User user = findUser(Long.parseLong(principal.getName()));
 
         Board board = Board.createBoard(boardRegistRequest, user);
 
@@ -69,16 +69,15 @@ public class BoardService {
     }
 
     // 유저 조회 메서드
-    private User findUser(String keyword) {
-        // 유저 정보 조회
-        User byUserId = userRepository.findByUserId(keyword);
+    private User findUser(Long userKey) {
+        User byUserKey = userRepository.findByUserKey(userKey);
 
         // 조회한 유저가 없으면 예외 throw
-        if (byUserId == null) {
+        if (byUserKey == null) {
             throw new NotFoundException();
         }
 
-        return byUserId;
+        return byUserKey;
     }
 
 }

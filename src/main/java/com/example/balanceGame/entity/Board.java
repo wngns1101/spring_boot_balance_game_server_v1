@@ -1,6 +1,6 @@
 package com.example.balanceGame.entity;
 
-import com.example.balanceGame.request.BoardRegistRequest;
+import com.example.balanceGame.controller.http.request.BoardRegistRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,20 +15,26 @@ public class Board {
     // 기본키 생성 전략
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_key")
+/*
+    수정: Long은 Wrapper 클래스로 특정 유형의 클래스이다.(long을 감싸는 클래스) null을 허용한다.
+    도메인에서 컬럼의 id는 데이터가 생성될 시점에 값이 할당되므로 특정 시점에 따라 존재할 수도, 안 할 수도 있다.
+    Long은 원시 타입의 long보다는 성능이 떨어지기 때문에 not null이 보장된 필드라면 long을 써야한다.
     private long boardKey;
+ */
+    private Long boardKey;
 
     // 작성자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_key")
     private User user;
 
-    // 좋아요 수를 위한 외래키
-    // 초기 생성에는 default 좋아요 null
+/*  수정 전 필드
+    수만 가져오려고 할 경우 별도 쿼리가 증가하기 때문에 성능 저하의 원인 유발
     @OneToOne(mappedBy = "board")
     private Heart heart;
+ */
+    private Long heartCount;
 
-    // 댓글
-    // 초기 생성에는 default 좋아요 0
     @OneToMany(mappedBy = "board")
     private List<Comment> comment;
 

@@ -1,4 +1,4 @@
-package com.example.balanceGame.response;
+package com.example.balanceGame.controller.http.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

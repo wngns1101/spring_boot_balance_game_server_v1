@@ -1,6 +1,6 @@
 package com.example.balanceGame.controller;
 
-import com.example.balanceGame.request.CommentRequest;
+import com.example.balanceGame.controller.http.request.CommentRequest;
 import com.example.balanceGame.service.CommentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

@@ -3,8 +3,10 @@ package com.example.balanceGame.repository;
 import com.example.balanceGame.entity.User;
 import com.example.balanceGame.exception.Message;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
+import jakarta.persistence.TransactionRequiredException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,32 +26,34 @@ public class UserRepository {
     }
 
     // 아이디 엔티티 조회
-    public User findByUserId(String userId) {
+    public Long findByUserId(String userId) {
         JPAQueryFactory qm = new JPAQueryFactory(em);
-        return qm.selectFrom(user).where(user.userId.eq(userId)).fetchOne();
+        return qm.select(user.userKey).from(user).where(user.userId.eq(userId)).fetchOne();
     }
 
     // user key 엔티티 조회
-    public User findByUserKey(long id) {
-        return em.find(User.class, id);
+    public User findByUserKey(Long userKey) {
+        JPAQueryFactory qm = new JPAQueryFactory(em);
+        return qm.selectFrom(user).where(user.userKey.eq(userKey)).fetchOne();
     }
 
     // 회원가입 메서드
-    public ResponseEntity join(User user) {
+    public boolean join(User user) {
         try {
+            // persist 작업 수행
             em.persist(user);
-            return new ResponseEntity(Message.CREATED_USER, HttpStatus.OK);
-        } catch (PersistenceException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
         }
     }
 
-    public ResponseEntity delete(User user) {
+    public boolean delete(User user) {
         try {
             em.remove(user);
-            return new ResponseEntity(Message.DELETE_USER, HttpStatus.OK);
-        } catch (PersistenceException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
         }
     }
 }

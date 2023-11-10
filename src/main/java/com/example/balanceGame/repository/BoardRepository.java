@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.example.balanceGame.entity.QBoard.board;
-import static com.example.balanceGame.entity.QHeart.heart;
 
 @Slf4j
 @Repository
@@ -35,15 +34,14 @@ public class BoardRepository {
         }
     }
 
-    public Board findByBoardId(int boardkey) {
+    public Board findByBoardKey(Long boardkey) {
         return em.find(Board.class, boardkey);
     }
 
     public BoardHeartDto findBoardAndHeart(long boardKey) {
             JPAQueryFactory qm = new JPAQueryFactory(em);
-            BoardHeartDto boardHeartDto = qm.select(Projections.bean(BoardHeartDto.class, board.boardTitle, board.leftContent, board.rightContent, board.leftCount, board.rightCount, heart.count().as("heartCount")))
+            BoardHeartDto boardHeartDto = qm.select(Projections.bean(BoardHeartDto.class, board.boardTitle, board.leftContent, board.rightContent, board.leftCount, board.rightCount, board.heartCount))
                     .from(board)
-                    .leftJoin(heart).on(board.boardKey.eq(heart.board.boardKey))
                     .where(board.boardKey.eq(boardKey))
                     .fetchOne();
             return boardHeartDto;
