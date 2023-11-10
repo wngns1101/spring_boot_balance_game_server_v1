@@ -7,7 +7,7 @@ import com.example.balanceGame.exception.NotFoundException;
 import com.example.balanceGame.repository.BoardRepository;
 import com.example.balanceGame.repository.CommentRepository;
 import com.example.balanceGame.repository.UserRepository;
-import com.example.balanceGame.request.CommentRequest;
+import com.example.balanceGame.controller.http.request.CommentRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ public class CommentService {
     @Transactional
     public ResponseEntity regist(CommentRequest commentRequest, Principal principal) {
         // 유저 정보 조회
-        User user = findUser(principal.getName());
+        User user = findUser(Long.parseLong(principal.getName()));
 
         // 게시글 정보 조회
         Board board = findBoard(commentRequest.getBoardKey());
@@ -40,27 +40,25 @@ public class CommentService {
     }
 
     // 유저 조회 메서드
-    private User findUser(String keyword) {
-        // 유저 정보 조회
-        User byUserId = userRepository.findByUserId(keyword);
-
+    private User findUser(Long userKey) {
+        User byUserKey = userRepository.findByUserKey(userKey);
         // 조회한 유저가 없으면 예외 throw
-        if (byUserId == null) {
+        if (byUserKey == null) {
             throw new NotFoundException();
         }
 
-        return byUserId;
+        return byUserKey;
     }
 
-    private Board findBoard(int boardKey) {
+    private Board findBoard(Long boardKey) {
         // 유저 정보 조회
-        Board byBoardId = boardRepository.findByBoardId(boardKey);
+        Board byBoardKey = boardRepository.findByBoardKey(boardKey);
 
         // 조회한 유저가 없으면 예외 throw
-        if (byBoardId == null) {
+        if (byBoardKey == null) {
             throw new NotFoundException();
         }
 
-        return byBoardId;
+        return byBoardKey;
     }
 }

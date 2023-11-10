@@ -1,4 +1,4 @@
-package com.example.balanceGame.response;
+package com.example.balanceGame.controller.http.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,10 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class FindUserResponse {
-    // 응답 메시지
-    private String message;
-
+public class ModifyRequest {
     // 아이디
     private String userId;
 

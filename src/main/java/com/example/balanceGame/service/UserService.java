@@ -1,16 +1,13 @@
 package com.example.balanceGame.service;
 
+import com.example.balanceGame.controller.http.request.*;
 import com.example.balanceGame.entity.User;
-import com.example.balanceGame.exception.DuplicateUserException;
-import com.example.balanceGame.exception.PasswordMismatchException;
-import com.example.balanceGame.exception.Message;
-import com.example.balanceGame.exception.NotFoundException;
+import com.example.balanceGame.exception.*;
 import com.example.balanceGame.jwt.JwtProvider;
 import com.example.balanceGame.repository.UserRepository;
-import com.example.balanceGame.request.*;
-import com.example.balanceGame.response.FindUserResponse;
-import com.example.balanceGame.response.ModifyResponse;
-import com.example.balanceGame.response.SignInResponse;
+import com.example.balanceGame.controller.http.response.FindUserResponse;
+import com.example.balanceGame.controller.http.response.ModifyResponse;
+import com.example.balanceGame.controller.http.response.SignInResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.auth.login.FailedLoginException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 
@@ -32,21 +30,16 @@ public class UserService {
 
     // 회원가입 메서드
     @Transactional
-    public ResponseEntity join(SignUpRequest signUpRequest) {
-        // 중복 조회
-        validateDuplicateUserId(signUpRequest.getUserId());
-        validateDuplicateUserEmail(signUpRequest.getUserEmail());
+    public boolean join(SignUpRequest signUpRequest) {
+        validateDuplicateUserId(signUpRequest.getUserId()); // 아이디 중복 조회
 
-        // 비밀번호 암호화
-        String encodePw = passwordEncoder.encode(signUpRequest.getUserPw());
+        validateDuplicateUserEmail(signUpRequest.getUserEmail()); // 이메일 중복 조회
 
-        // 비밀번호 일치 확인
-        if (!passwordEncoder.matches(signUpRequest.getUserPw(), encodePw)) {
-            throw new PasswordMismatchException();
-        }
+        String encodePw = passwordEncoder.encode(signUpRequest.getUserPw()); // 비밀번호 암호화
 
-        // User 엔티티 생성
-        User joinUser = User.builder()
+        validatePassword(signUpRequest.getUserPw(), encodePw);
+
+        User joinUser = User.builder() // User 엔티티 생성
                 .userId(signUpRequest.getUserId())
                 .userName(signUpRequest.getUserName())
                 .userPw(encodePw)
@@ -59,89 +52,75 @@ public class UserService {
     }
 
     // 로그인 메서드
-    public ResponseEntity<SignInResponse> login(SignInRequest signInRequest) {
-        // 아이디로 유저 조회
-        User findUser = findUser(signInRequest.getUserId());
+    public String login(SignInRequest signInRequest) {
 
-        // 비밀번호가 저장된 것과 일치하지 않으면 예외 리턴
-        if (!passwordEncoder.matches(signInRequest.getUserPw(), findUser.getUserPw())) {
-            throw new PasswordMismatchException();
+        Long userKey = userRepository.findByUserId(signInRequest.getUserId()); // userId로 userKey 조회하는 메서드
+
+        if (userKey == null) {
+            throw new NotFoundException(); // 조회된 userKey가 없으면 throw
         }
 
-        // jwt 생성
-        String token = jwtProvider.createToken(findUser.getUserId());
+        User findUser = findUser(userKey); // 아이디로 유저 조회
 
-        // response dto 생성
-        SignInResponse build = SignInResponse.builder()
-                .message(Message.LOGIN_SUCCESS)
-                .token(token)
-                .build();
+        validatePassword(signInRequest.getUserPw(), findUser.getUserPw()); // 비밀번호가 저장된 것과 일치하지 않으면 throw
 
-        return new ResponseEntity<>(build, HttpStatus.OK);
+        String token = jwtProvider.createToken(findUser.getUserKey());// jwt 생성
+
+        if (token == null) {
+            throw new FailedCreateTokenException(); // 토큰이 없으면 throw
+        }
+
+        return token;
     }
 
     // 유저 정보 상세 조회 메서드
-    public ResponseEntity<FindUserResponse> profile(Principal principal) {
-        // 유저 조회
-        User byUserId = findUser(principal.getName());
-
-        // response 생성
-        FindUserResponse findUserResponse = FindUserResponse.builder()
-                .message(Message.READ_USER)
-                .userId(byUserId.getUserId())
-                .userName(byUserId.getUserName())
-                .userEmail(byUserId.getUserEmail())
-                .build();
-
-        return new ResponseEntity<>(findUserResponse, HttpStatus.OK);
+    public User profile(Principal principal) {
+        return findUser(Long.parseLong(principal.getName())); // Principle 객체로 가져온 키값으로 User 엔티티 조회
     }
 
     // 수정 메서드
     @Transactional
-    public ResponseEntity<ModifyResponse> modify(ModifyRequest modifyRequest, Principal principal) {
-        // 유저 정보 조회
-        User byUserId = findUser(principal.getName());
+    public String modify(ModifyRequest modifyRequest, Principal principal) {
 
-        // 유저 정보 수정
-        byUserId.modifyUser(modifyRequest);
+        validateDuplicateUserId(modifyRequest.getUserId()); // 수정할 아이디 중복 조회
 
-        // 토큰 재발급
-        String token = jwtProvider.createToken(byUserId.getUserId());
 
-        ModifyResponse response = ModifyResponse.builder()
-                .message(Message.UPDATE_USER)
-                .token(token)
-                .build();
+        User byUserId = findUser(Long.parseLong(principal.getName())); // 유저 정보 조회
 
-        return new ResponseEntity(response, HttpStatus.OK);
+
+        byUserId.modifyUser(modifyRequest); // 유저 정보 수정
+
+
+        String token = jwtProvider.createToken(byUserId.getUserKey()); // 토큰 재발급
+
+        if (token == null) {
+            throw new FailedRegenerateTokenException(); // token이 null이면 throw
+        }
+
+        return token;
     }
 
     // 비밀번호 수정 메서드
     @Transactional
-    public ResponseEntity modifyPw(ModifyPwRequest modifyPwRequest, Principal principal) {
-        // 유저 정보 조회
-        User user = findUser(principal.getName());
+    public User modifyPw(ModifyPwRequest modifyPwRequest, Principal principal) {
 
-        // 비빌번호가 데이터베이스에 저장된 비밀번호와 같은지 조회
-        if (!passwordEncoder.matches(modifyPwRequest.getCurrentPw(), user.getUserPw())) {
-            throw new PasswordMismatchException();
-        }
+        User user = findUser(Long.parseLong(principal.getName())); // 유저 정보 조회
 
-        user.modifyPw(passwordEncoder.encode(modifyPwRequest.getModifyPw()));
+        validatePassword(modifyPwRequest.getCurrentPw(), user.getUserPw()); // 비빌번호가 데이터베이스에 저장된 비밀번호와 같은지 조회
 
-        return new ResponseEntity(Message.UPDATE_PW, HttpStatus.OK);
+        user.modifyPw(passwordEncoder.encode(modifyPwRequest.getModifyPw())); // 비밀번호 변경
+
+        return user;
     }
 
     // 회원 삭제 메서드
     @Transactional
-    public ResponseEntity delete(DeleteRequest deleteRequest, Principal principal) {
+    public boolean delete(DeleteRequest deleteRequest, Principal principal) {
         // 유저 정보 조회
-        User user = findUser(principal.getName());
+        User user = findUser(Long.parseLong(principal.getName()));
 
         // 비빌번호가 데이터베이스에 저장된 비밀번호와 같은지 조회
-        if (!passwordEncoder.matches(deleteRequest.getPw(), user.getUserPw())) {
-            throw new PasswordMismatchException();
-        }
+        validatePassword(deleteRequest.getPw(), user.getUserPw());
 
         return userRepository.delete(user);
     }
@@ -149,10 +128,10 @@ public class UserService {
     // 중복 아이디 조회 메서드
     private void validateDuplicateUserId(String userId) {
         // 유저 정보 조회
-        User byUserId = userRepository.findByUserId(userId);
+        Long userKey = userRepository.findByUserId(userId);
 
-        if (byUserId != null) {
-            throw new DuplicateUserException();
+        if (userKey != null) {
+            throw new DuplicateUserIdException();
         }
     }
 
@@ -162,14 +141,20 @@ public class UserService {
         User byUserEmail = userRepository.findByUserEmail(email);
 
         if (byUserEmail != null) {
-            throw new DuplicateUserException();
+            throw new DuplicateUserEmailException();
+        }
+    }
+
+    private void validatePassword(String signInRequest, String findUser) {
+        if (!passwordEncoder.matches(signInRequest, findUser)) {
+            throw new PasswordMismatchException();
         }
     }
 
     // 유저 조회 메서드
-    private User findUser(String keyword) {
+    private User findUser(Long userKey) {
         // 유저 정보 조회
-        User byUserId = userRepository.findByUserId(keyword);
+        User byUserId = userRepository.findByUserKey(userKey);
 
         // 조회한 유저가 없으면 예외 throw
         if (byUserId == null) {

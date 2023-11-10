@@ -1,4 +1,4 @@
-package com.example.balanceGame.response;
+package com.example.balanceGame.controller.http.response;
 
 import com.example.balanceGame.dto.BoardHeartDto;
 import com.example.balanceGame.dto.CommentDto;

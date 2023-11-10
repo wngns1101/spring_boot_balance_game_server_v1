@@ -1,6 +1,6 @@
 package com.example.balanceGame;
 
-import com.example.balanceGame.request.CommentRequest;
+import com.example.balanceGame.controller.http.request.CommentRequest;
 import com.example.balanceGame.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ public class CommentTest {
     @Test
     public void 댓글등록테스트() {
         CommentRequest commentRequest = CommentRequest.builder()
-                .boardKey(2)
+                .boardKey(2L)
                 .commentContent("아니지 멍청아")
                 .build();
 

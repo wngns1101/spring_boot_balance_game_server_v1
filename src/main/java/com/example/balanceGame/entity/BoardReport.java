@@ -17,7 +17,7 @@ public class BoardReport {
     // 기본키 생성 전략
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "report_key")
-    private long reportKey;
+    private Long reportKey;
 
     // 게시글 신고자
     @ManyToOne(fetch = FetchType.LAZY)

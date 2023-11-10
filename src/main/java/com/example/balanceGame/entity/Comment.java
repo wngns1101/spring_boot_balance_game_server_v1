@@ -1,8 +1,7 @@
 package com.example.balanceGame.entity;
 
-import com.example.balanceGame.request.CommentRequest;
+import com.example.balanceGame.controller.http.request.CommentRequest;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +14,7 @@ public class Comment {
     // 기본키 생성 전략
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_key")
-    private long commentKey;
+    private Long commentKey;
 
     // 댓글을 달 게시물
     @ManyToOne

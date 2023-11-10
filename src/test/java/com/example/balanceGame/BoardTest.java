@@ -1,12 +1,14 @@
 package com.example.balanceGame;
 
-import com.example.balanceGame.request.BoardRegistRequest;
-import com.example.balanceGame.response.BoardDetailResponse;
+import com.example.balanceGame.controller.http.request.BoardRegistRequest;
+import com.example.balanceGame.controller.http.response.BoardDetailResponse;
+import com.example.balanceGame.controller.http.response.FindAllByDateResponse;
 import com.example.balanceGame.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
@@ -42,11 +44,24 @@ public class BoardTest {
     }
 
     @Test
-    public void 게시글조회테스트() {
+    public void 게시글상세조회테스트() {
         // given and when
         ResponseEntity<BoardDetailResponse> boardProfile = boardService.findBoardProfile(2);
 
         // then
         log.info(String.valueOf(boardProfile.getBody()));
+    }
+
+    @Test
+    public void 게시글페이징테스트() {
+        // given
+        int page = 0;
+        int size = 20;
+
+        // when
+        ResponseEntity<FindAllByDateResponse> allByDate = boardService.findAllByDate(PageRequest.of(page, size));
+
+        // then
+        log.info(String.valueOf(allByDate));
     }
 }

@@ -1,4 +1,4 @@
-package com.example.balanceGame.request;
+package com.example.balanceGame.controller.http.request;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class CommentRequest {
-    private int boardKey;
+    private Long boardKey;
     private String commentContent;
 }
