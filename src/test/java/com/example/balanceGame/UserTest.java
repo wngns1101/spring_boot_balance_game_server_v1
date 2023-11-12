@@ -77,7 +77,7 @@ public class UserTest {
                 .userName("fy")
                 .build();
 
-        Principal principal = () -> "2"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
+        Principal principal = () -> "1"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
 
         // when
         String modify1 = userService.modify(modify, principal);// 수정 진행
@@ -91,7 +91,7 @@ public class UserTest {
     @Test
     public void 정보조회테스트() {
         // given
-        Principal principal = () -> "2"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
+        Principal principal = () -> "1"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
 
         // when
         User profile = userService.profile(principal);// 정보 조회 진행
@@ -108,7 +108,7 @@ public class UserTest {
                 .currentPw("zzz")
                 .build(); // 비밀번호 정보 생성
 
-        Principal principal = () -> "2"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
+        Principal principal = () -> "1"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
 
         // when
         User user = userService.modifyPw(test, principal);// 비밀번호 변경 진행
@@ -123,7 +123,7 @@ public class UserTest {
         DeleteRequest change = DeleteRequest.builder() // 비밀번호 정보 생성
                 .pw("change")
                 .build();
-        Principal principal = () -> "2"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
+        Principal principal = () -> "1"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
 
         // when
         boolean delete = userService.delete(change, principal);// 계정 삭제 진행

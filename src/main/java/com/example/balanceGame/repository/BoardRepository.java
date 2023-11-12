@@ -29,12 +29,12 @@ import static com.querydsl.core.group.GroupBy.list;
 public class BoardRepository {
     private final EntityManager em;
 
-    public ResponseEntity regist(Board board) {
+    public boolean regist(Board board) {
         try {
             em.persist(board);
-            return new ResponseEntity(Message.REGIST_BOARD, HttpStatus.OK);
-        } catch (PersistenceException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
         }
     }
 

@@ -19,6 +19,8 @@ import static com.example.balanceGame.entity.QUser.user;
 @RequiredArgsConstructor
 public class UserRepository {
     private final EntityManager em;
+    private final JPAQueryFactory qm;
+
     // 이메일 엔티티 조회
     public User findByUserEmail(String email) {
         JPAQueryFactory qm = new JPAQueryFactory(em);

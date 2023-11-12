@@ -1,21 +1,18 @@
 package com.example.balanceGame;
 
 import com.example.balanceGame.controller.http.request.BoardRegistRequest;
-import com.example.balanceGame.controller.http.response.BoardDetailResponse;
-import com.example.balanceGame.controller.http.response.FindAllByDateResponse;
 import com.example.balanceGame.dto.BoardDetailDto;
+import com.example.balanceGame.dto.CommentDto;
+import com.example.balanceGame.entity.BoardHeartHistory;
+import com.example.balanceGame.service.BoardHeartHistoryService;
 import com.example.balanceGame.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
@@ -24,9 +21,9 @@ public class BoardTest {
     @Autowired
     private BoardService boardService;
 
+    @Autowired
+    private BoardHeartHistoryService boardHeartHistoryService;
     @Test
-    @Rollback(value = false)
-    @Transactional
     public void 게시글등록테스트() {
         // given
         BoardRegistRequest boardRegistRequest = BoardRegistRequest.builder() // 게시글 작성
@@ -35,35 +32,38 @@ public class BoardTest {
                 .rightContent("짬뽕")
                 .build();
 
-        Principal principal = () -> "test";
+        Principal principal = () -> "1";
 
         // when
-        ResponseEntity result = boardService.regist(boardRegistRequest, principal); // 게시글 저장
+        boolean regist = boardService.regist(boardRegistRequest, principal);// 게시글 저장
 
         // then
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(regist).isEqualTo(true);
     }
 
     @Test
     public void 게시글상세조회테스트() {
-        // given and when
-        ResponseEntity<BoardDetailResponse> boardProfile = boardService.findBoardProfile(2);
+        // given
+        Long boardKey = 1L;
+
+        // when
+        BoardDetailDto boardProfile = boardService.findBoardProfile(boardKey);
+        List<CommentDto> comment = boardService.findComment(boardKey);
 
         // then
-        log.info(String.valueOf(boardProfile.getBody()));
+        assertThat(boardProfile).isNotNull();
     }
 
     @Test
-    public void 게시글페이징테스트() {
+    public void 게시글좋아요추가테스트() {
         // given
-        int page = 0;
-        int size = 20;
+        Long boardKey = 1L;
+        Long userKey = 1L;
 
         // when
-        ResponseEntity<FindAllByDateResponse> allByDate = boardService.findAllByDate(PageRequest.of(page, size));
+        boolean insert = boardHeartHistoryService.insert(boardKey, userKey);
 
         // then
-        assertThat(allByDate.getBody().getMessage()).isEqualTo("게시물 조회에 성공했습니다.");
-        log.info(allByDate.getBody().getFindAllByDateDtos().toString());
+        assertThat(insert).isTrue();
     }
 }
