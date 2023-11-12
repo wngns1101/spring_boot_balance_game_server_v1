@@ -37,9 +37,9 @@ public class UserController {
         boolean join = userService.join(signUpRequest); // 회원가입 진행
 
         if (join) {
-            return new ResponseEntity("회원가입에 성공했습니다.", HttpStatus.OK); // 성공하면 200 리턴
+            return new ResponseEntity(Message.CREATED_USER, HttpStatus.OK); // 성공하면 200 리턴
         } else {
-            return new ResponseEntity("회원가입에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR); // 실패하면 500 리턴
+            return new ResponseEntity(Message.CREATED_USER_FAILED, HttpStatus.INTERNAL_SERVER_ERROR); // 실패하면 500 리턴
         }
     }
 
@@ -98,7 +98,7 @@ public class UserController {
         User user = userService.modifyPw(modifyPwRequest, principal);// 회원 비밀번호 수정
 
         if (passwordEncoder.matches(modifyPwRequest.getModifyPw(), user.getUserPw())) { // 엔티티에서 수정된 비밀번호가 Request에서 수정할 비밀번호랑 같은지 비교
-            return new ResponseEntity("비밀번호 변경 성공", HttpStatus.OK);
+            return new ResponseEntity(Message.UPDATE_PW, HttpStatus.OK);
         } else {
             throw new PasswordMismatchException();
         }

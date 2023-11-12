@@ -41,4 +41,9 @@ public class ApiExceptionHandler {
     public ResponseEntity<Object> failedDeleteException(FailedDeleteException ex) {
         return new ResponseEntity<>(Message.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> failedFindException(FailedFindException ex) {
+        return new ResponseEntity<>(Message.FAILED_FIND_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

@@ -21,7 +21,7 @@ public class Board {
     Long은 원시 타입의 long보다는 성능이 떨어지기 때문에 not null이 보장된 필드라면 long을 써야한다.
     private long boardKey;
  */
-    private Long boardKey;
+    private Long boardKey = 0L;
 
     // 작성자
     @ManyToOne(fetch = FetchType.LAZY)
@@ -67,5 +67,13 @@ public class Board {
 
     public static Board createBoard(BoardRegistRequest boardRegistRequest, User user) {
         return new Board(boardRegistRequest, user);
+    }
+
+    public void addCountHeart() {
+        if (this.heartCount == null) {
+            this.heartCount = 1L; // 초기화되지 않은 경우 1로 초기화
+        } else {
+            this.heartCount += 1; // 이미 초기화된 경우 증가
+        }
     }
 }

@@ -20,11 +20,11 @@ public class BoardHeartHistory {
     private Long heartKey;
 
     // 유저 정보
-    private long userKey;
+    private Long userKey;
 
     // 게시글 정보
-    private long boardId;
+    private Long boardKey;
 
     // 생성 시간
-    private LocalDateTime localDateTime;
+    private LocalDateTime heartTime;
 }
