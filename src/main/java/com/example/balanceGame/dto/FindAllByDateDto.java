@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class FindAllByDateDto {
     private long boardKey;
-    private String boardTitle;
+    private String userName;
     private LocalDateTime boardDate;
+    private String boardTitle;
+    private String leftContent;
+    private String rightContent;
 }

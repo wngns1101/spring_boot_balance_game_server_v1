@@ -1,9 +1,9 @@
 package com.example.balanceGame.repository;
 
+import com.example.balanceGame.dto.BoardDetailDto;
 import com.example.balanceGame.dto.FindAllByDateDto;
 import com.example.balanceGame.entity.Board;
 import com.example.balanceGame.exception.Message;
-import com.example.balanceGame.dto.BoardHeartDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -15,9 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.balanceGame.entity.QBoard.board;
+import static com.example.balanceGame.entity.QComment.comment;
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 
 @Slf4j
 @Repository
@@ -38,22 +42,22 @@ public class BoardRepository {
         return em.find(Board.class, boardkey);
     }
 
-    public BoardHeartDto findBoardAndHeart(long boardKey) {
-            JPAQueryFactory qm = new JPAQueryFactory(em);
-            BoardHeartDto boardHeartDto = qm.select(Projections.bean(BoardHeartDto.class, board.boardTitle, board.leftContent, board.rightContent, board.leftCount, board.rightCount, board.heartCount))
-                    .from(board)
-                    .where(board.boardKey.eq(boardKey))
-                    .fetchOne();
-            return boardHeartDto;
+    public BoardDetailDto findBoardAndHeart(long boardKey) {
+        JPAQueryFactory qm = new JPAQueryFactory(em);
+        BoardDetailDto boardHeartDto = qm.select(Projections.bean(BoardDetailDto.class, board.boardKey, board.user.userName, board.boardTitle, board.leftContent, board.rightContent, board.leftCount, board.rightCount, board.heartCount))
+                .from(board)
+                .where(board.boardKey.eq(boardKey))
+                .fetchOne();
+        return boardHeartDto;
     }
 
     public List<FindAllByDateDto> findAllByDate(PageRequest pageRequest) {
         JPAQueryFactory qm = new JPAQueryFactory(em);
-        return qm.select(Projections.bean(FindAllByDateDto.class, board.boardKey, board.boardTitle, board.boardDate))
+        return qm.select(Projections.bean(FindAllByDateDto.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent))
                 .from(board)
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
-                .orderBy(board.boardDate.asc())
+                .orderBy(board.boardDate.desc())
                 .fetch();
     }
 }
