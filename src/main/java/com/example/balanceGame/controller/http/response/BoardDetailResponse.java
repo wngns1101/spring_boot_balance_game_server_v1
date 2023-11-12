@@ -1,6 +1,6 @@
 package com.example.balanceGame.controller.http.response;
 
-import com.example.balanceGame.dto.BoardHeartDto;
+import com.example.balanceGame.dto.BoardDetailDto;
 import com.example.balanceGame.dto.CommentDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,15 +14,19 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardDetailResponse {
+    private Long boardKey;
+    private String userName;
     private String boardTitle;
     private String leftContent;
     private String rightContent;
     private int leftCount;
     private int rightCount;
-    private long heartCount;
+    private Long heartCount;
     private List<CommentDto> commentList;
 
-    public BoardDetailResponse(BoardHeartDto boardHeartDto, List<CommentDto> comment) {
+    public BoardDetailResponse(BoardDetailDto boardHeartDto, List<CommentDto> comment) {
+        this.boardKey = boardHeartDto.getBoardKey();
+        this.userName = boardHeartDto.getUserName();
         this.boardTitle = boardHeartDto.getBoardTitle();
         this.leftContent = boardHeartDto.getLeftContent();
         this.rightContent = boardHeartDto.getRightContent();

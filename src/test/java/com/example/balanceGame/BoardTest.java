@@ -3,6 +3,7 @@ package com.example.balanceGame;
 import com.example.balanceGame.controller.http.request.BoardRegistRequest;
 import com.example.balanceGame.controller.http.response.BoardDetailResponse;
 import com.example.balanceGame.controller.http.response.FindAllByDateResponse;
+import com.example.balanceGame.dto.BoardDetailDto;
 import com.example.balanceGame.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -62,6 +63,7 @@ public class BoardTest {
         ResponseEntity<FindAllByDateResponse> allByDate = boardService.findAllByDate(PageRequest.of(page, size));
 
         // then
-        log.info(String.valueOf(allByDate));
+        assertThat(allByDate.getBody().getMessage()).isEqualTo("게시물 조회에 성공했습니다.");
+        log.info(allByDate.getBody().getFindAllByDateDtos().toString());
     }
 }

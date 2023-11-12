@@ -1,5 +1,6 @@
 package com.example.balanceGame.service;
 
+import com.example.balanceGame.dto.BoardDetailDto;
 import com.example.balanceGame.dto.CommentDto;
 import com.example.balanceGame.dto.FindAllByDateDto;
 import com.example.balanceGame.entity.Board;
@@ -9,7 +10,6 @@ import com.example.balanceGame.repository.BoardRepository;
 import com.example.balanceGame.repository.CommentRepository;
 import com.example.balanceGame.repository.UserRepository;
 import com.example.balanceGame.controller.http.request.BoardRegistRequest;
-import com.example.balanceGame.dto.BoardHeartDto;
 import com.example.balanceGame.controller.http.response.BoardDetailResponse;
 import com.example.balanceGame.controller.http.response.FindAllByDateResponse;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class BoardService {
     // 게시글 상세 조회 메서드
     public ResponseEntity<BoardDetailResponse> findBoardProfile(long boardKey) {
         // 게시글 정보, 좋아요 숫자 조회
-        BoardHeartDto boardHeartDto = boardRepository.findBoardAndHeart(boardKey);
+        BoardDetailDto boardHeartDto = boardRepository.findBoardAndHeart(boardKey);
 
         // 댓글 리스트 조회
         List<CommentDto> allComment = commentRepository.findAllComment(boardKey);
