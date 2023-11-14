@@ -20,6 +20,7 @@ import static com.example.balanceGame.entity.QComment.comment;
 @RequiredArgsConstructor
 public class CommentRepository {
     private final EntityManager em;
+    private final JPAQueryFactory qm;
 
     public ResponseEntity regist(Comment comment) {
         try {
@@ -31,7 +32,6 @@ public class CommentRepository {
     }
 
     public List<CommentDto> findAllComment(long boardKey) {
-        JPAQueryFactory qm = new JPAQueryFactory(em);
         return qm.select(Projections.bean(CommentDto.class, comment.commentKey, comment.commentTime, comment.commentContent))
                 .from(comment)
                 .where(comment.board.boardKey.eq(boardKey))

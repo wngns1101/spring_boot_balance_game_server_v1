@@ -24,4 +24,6 @@ public class Message {
     public static final String FAILED_FIND_ERROR = "조회에 실패했습니다.";
     public static final String HEART_SUCCESS = "좋아요에 성공했습니다.";
     public static final String HEART_FAILED = "좋아요에 실패했습니다.";
+    public static final String HEART_REMOVE_SUCCESS = "좋아요 취소에 성공했습니다.";
+    public static final String HEART_REMOVE_FAILED = "좋아요 취소에 실패했습니다.";
 }

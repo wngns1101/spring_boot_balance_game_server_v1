@@ -28,6 +28,7 @@ import static com.querydsl.core.group.GroupBy.list;
 @RequiredArgsConstructor
 public class BoardRepository {
     private final EntityManager em;
+    private final JPAQueryFactory qm;
 
     public boolean regist(Board board) {
         try {
@@ -43,7 +44,6 @@ public class BoardRepository {
     }
 
     public BoardDetailDto findBoardAndHeart(long boardKey) {
-        JPAQueryFactory qm = new JPAQueryFactory(em);
         BoardDetailDto boardHeartDto = qm.select(Projections.bean(BoardDetailDto.class, board.boardKey, board.user.userName, board.boardTitle, board.leftContent, board.rightContent, board.leftCount, board.rightCount, board.heartCount))
                 .from(board)
                 .where(board.boardKey.eq(boardKey))
@@ -52,7 +52,6 @@ public class BoardRepository {
     }
 
     public List<FindAllByDateDto> findAllByDate(PageRequest pageRequest) {
-        JPAQueryFactory qm = new JPAQueryFactory(em);
         return qm.select(Projections.bean(FindAllByDateDto.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent))
                 .from(board)
                 .offset(pageRequest.getOffset())
