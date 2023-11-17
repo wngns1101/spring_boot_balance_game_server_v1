@@ -23,19 +23,16 @@ public class UserRepository {
 
     // 이메일 엔티티 조회
     public User findByUserEmail(String email) {
-        JPAQueryFactory qm = new JPAQueryFactory(em);
         return qm.selectFrom(user).where(user.userEmail.eq(email)).fetchOne();
     }
 
     // 아이디 엔티티 조회
     public Long findByUserId(String userId) {
-        JPAQueryFactory qm = new JPAQueryFactory(em);
         return qm.select(user.userKey).from(user).where(user.userId.eq(userId)).fetchOne();
     }
 
     // user key 엔티티 조회
     public User findByUserKey(Long userKey) {
-        JPAQueryFactory qm = new JPAQueryFactory(em);
         return qm.selectFrom(user).where(user.userKey.eq(userKey)).fetchOne();
     }
 

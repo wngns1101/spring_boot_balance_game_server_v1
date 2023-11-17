@@ -46,4 +46,9 @@ public class ApiExceptionHandler {
     public ResponseEntity<Object> failedFindException(FailedFindException ex) {
         return new ResponseEntity<>(Message.FAILED_FIND_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> internalServerException(InternalServerException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

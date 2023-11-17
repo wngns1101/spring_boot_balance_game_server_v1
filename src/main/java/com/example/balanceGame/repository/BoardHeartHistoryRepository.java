@@ -16,8 +16,8 @@ public class BoardHeartHistoryRepository {
     private final JPAQueryFactory qm;
 
     // 좋아요 한 유저 조회 메서드
-    public Long findHeartByBoardIdAndUserId(Long boardKey, Long userKey) {
-        return qm.select(boardHeartHistory.heartKey)
+    public BoardHeartHistory findHeartByBoardIdAndUserId(Long boardKey, Long userKey) {
+        return qm.select(boardHeartHistory)
                 .from(boardHeartHistory)
                 .where(boardHeartHistory.boardKey.eq(boardKey).and(boardHeartHistory.userKey.eq(userKey)))
                 .fetchOne();
@@ -29,6 +29,16 @@ public class BoardHeartHistoryRepository {
             em.persist(boardHeartHistory);
             return true;
         } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public boolean delete(BoardHeartHistory boardHeartHistory) {
+        try {
+            em.remove(boardHeartHistory);
+            return true;
+        } catch (IllegalArgumentException e) {
+            log.info("IllegalArgumentException Error");
             return false;
         }
     }

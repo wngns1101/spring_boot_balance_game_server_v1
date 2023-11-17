@@ -56,6 +56,15 @@ public class Board {
     // 작성 시간
     private LocalDateTime boardDate;
 
+    /*
+        Optimistic Lock(낙관적 락)을 적용하기 위한 version
+        좋아요 동시성 처리를 고민하던 중 싱글 서버이기 떄문에 Redis를 사용하지 앟고
+        애플리케이션 단계에서 동시성 처리를 할 수 있다고 생각했다.
+        Pessimistic Lock(비관적 락)은 불필요한 경우에도 Lock을 걸기 때문에 성능이 저하된다는 단점이 있어 낙관적 락을 사용하는 방법을 채택했다.
+    */
+    @Version
+    private Long version;
+
     public Board(BoardRegistRequest boardRegistRequest, User user) {
         this.user = user;
         this.boardTitle = boardRegistRequest.getBoardTitle();
@@ -69,11 +78,17 @@ public class Board {
         return new Board(boardRegistRequest, user);
     }
 
-    public void addCountHeart() {
+    public void plusHeartCount() {
         if (this.heartCount == null) {
             this.heartCount = 1L; // 초기화되지 않은 경우 1로 초기화
         } else {
             this.heartCount += 1; // 이미 초기화된 경우 증가
+        }
+    }
+
+    public void minusHeartCount() {
+        if (this.heartCount != null && this.heartCount != 0) {
+            this.heartCount -= 1;
         }
     }
 }
