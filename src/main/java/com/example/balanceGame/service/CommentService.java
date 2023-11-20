@@ -46,7 +46,7 @@ public class CommentService {
             return false;
         }
 
-        return boardRepository.delete(commentByBoardKeyAndUserKey);
+        return commentRepository.delete(commentByBoardKeyAndUserKey);
     }
 
     // 유저 조회 메서드

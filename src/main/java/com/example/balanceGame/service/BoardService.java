@@ -38,6 +38,19 @@ public class BoardService {
         return boardRepository.regist(board);
     }
 
+    @Transactional
+    public boolean delete(Long boardKey, long userKey) {
+        Board byBoardKeyAndUserKey = boardRepository.findByBoardKeyAndUserKey(boardKey, userKey);
+
+        if (byBoardKeyAndUserKey == null) {
+            throw new FailedFindException();
+        }
+
+        log.info(byBoardKeyAndUserKey.toString());
+
+        return boardRepository.delete(byBoardKeyAndUserKey);
+    }
+
     // 게시글 상세 조회 메서드
     public BoardDetailDto findBoardProfile(long boardKey) {
         BoardDetailDto boardHeartDto = boardRepository.findBoardAndHeart(boardKey); // 게시글 정보, 좋아요 숫자 조회

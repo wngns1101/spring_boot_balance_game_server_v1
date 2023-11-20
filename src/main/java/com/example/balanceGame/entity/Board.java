@@ -29,12 +29,12 @@ public class Board {
     private User user;
 
     // 수만 가져오려고 할 경우 별도 쿼리가 증가하기 때문에 성능 저하의 원인 유발
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<BoardHeartHistory> heart;
 
     private Long heartCount = 0L;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Comment> comment;
 
     // 제목 ex) 짜장면 짬뽕 중 더 좋은 것은?

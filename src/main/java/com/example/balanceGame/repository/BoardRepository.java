@@ -33,6 +33,13 @@ public class BoardRepository {
         }
     }
 
+    public Board findByBoardKeyAndUserKey(Long boardKey, long userKey) {
+        return qm.selectFrom(board)
+                .where(board.boardKey.eq(boardKey)
+                        .and(board.user.userKey.eq(userKey)))
+                .fetchOne();
+    }
+
     public Board findByBoardKey(Long boardkey) {
         return em.find(Board.class, boardkey);
     }
@@ -81,12 +88,12 @@ public class BoardRepository {
                 .fetchOne();
     }
 
-    public boolean delete(Comment commentByBoardKeyAndUserKey) {
+
+    public boolean delete(Board byBoardKeyAndUserKey) {
         try {
-            em.remove(commentByBoardKeyAndUserKey);
+            em.remove(byBoardKeyAndUserKey);
             return true;
         } catch (Exception e) {
-            log.info(e.getMessage());
             return false;
         }
     }

@@ -1,5 +1,6 @@
 package com.example.balanceGame.controller;
 
+import com.example.balanceGame.controller.http.request.BoardDeleteRequest;
 import com.example.balanceGame.controller.http.request.BoardRegistRequest;
 import com.example.balanceGame.controller.http.response.BoardDetailResponse;
 import com.example.balanceGame.controller.http.response.FindAllByDateResponse;
@@ -7,6 +8,7 @@ import com.example.balanceGame.controller.http.response.FindAllByHeartResponse;
 import com.example.balanceGame.dto.BoardDetailDto;
 import com.example.balanceGame.dto.CommentDto;
 import com.example.balanceGame.dto.FindAllBoard;
+import com.example.balanceGame.exception.InternalServerException;
 import com.example.balanceGame.exception.Message;
 import com.example.balanceGame.service.BoardService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,39 +33,70 @@ public class BoardController {
      // 게시글 등록 controller
     @PostMapping("/regist")
     public ResponseEntity regist(@RequestBody BoardRegistRequest boardRegistRequest, Principal principal) {
-        boolean regist = boardService.regist(boardRegistRequest, principal);
+        try {
+            boolean regist = boardService.regist(boardRegistRequest, principal);
 
-        if (regist) {
-            return new ResponseEntity(Message.REGIST_BOARD, HttpStatus.OK);
-        } else {
-            return new ResponseEntity(Message.REGIST_BOARD_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+            if (regist) {
+                return new ResponseEntity(Message.REGIST_BOARD, HttpStatus.OK);
+            } else {
+                return new ResponseEntity(Message.REGIST_BOARD_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return new ResponseEntity(Message.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 게시글 삭제 controller
+    @PostMapping("/delete")
+    public ResponseEntity delete(@RequestBody BoardDeleteRequest boardDeleteRequest, Principal principal) {
+        long userKey = Long.parseLong(principal.getName());
+        try {
+            boolean delete = boardService.delete(boardDeleteRequest.getBoardKey(), userKey);
+            if (delete) {
+                return new ResponseEntity(Message.DELETE_COMMENT, HttpStatus.OK);
+            } else {
+                return new ResponseEntity(Message.DELETE_COMMENT_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return new ResponseEntity(Message.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // 게시글 상세조회 controller
     @GetMapping("/detail")
     public ResponseEntity<BoardDetailResponse> detail(@RequestParam("boardKey") long boardKey) {
-        BoardDetailDto boardProfile = boardService.findBoardProfile(boardKey); // 게시글 상세, 좋아요 수 조회
+        try {
+            BoardDetailDto boardProfile = boardService.findBoardProfile(boardKey); // 게시글 상세, 좋아요 수 조회
 
-        List<CommentDto> comment = boardService.findComment(boardKey); // 댓글 조회
+            List<CommentDto> comment = boardService.findComment(boardKey); // 댓글 조회
 
-        BoardDetailResponse boardDetailResponse = new BoardDetailResponse(boardProfile, comment); // Dto Response 형태로 종합
+            BoardDetailResponse boardDetailResponse = new BoardDetailResponse(boardProfile, comment); // Dto Response 형태로 종합
 
-        return new ResponseEntity<>(boardDetailResponse, HttpStatus.OK);
+            return new ResponseEntity<>(boardDetailResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            throw new InternalServerException("서버 오류입니다.");
+        }
     }
 
     // 게시글 페이징 날짜순으로 조회
     @GetMapping("/findAllByDate")
     public ResponseEntity<FindAllByDateResponse> findAllByDate(@RequestParam("page") Integer page, @RequestParam(value = "size", defaultValue = "20", required = false) Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size); // 페이징 객체 생성
+        try {
+            List<FindAllBoard> allByDate = boardService.findAllByDate(pageRequest); // 날짜순 리스트 조회
 
-        List<FindAllBoard> allByDate = boardService.findAllByDate(pageRequest); // 날짜순 리스트 조회
-
-        if (allByDate.size() == 0) {
-            return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD_FAILED).build(), HttpStatus.OK); // 조회한 게시글이 없을 때
+            if (allByDate.size() == 0) {
+                return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD_FAILED).build(), HttpStatus.OK); // 조회한 게시글이 없을 때
+            }else{
+                return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD).findAllBoards(allByDate).build(), HttpStatus.OK); // 조회 게시글 리턴
+            }
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            throw new InternalServerException("서버 오류입니다.");
         }
-
-        return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD).findAllBoards(allByDate).build(), HttpStatus.OK); // 조회 게시글 리턴
     }
 
     // 게시글 좋아요 순으로 조회
@@ -79,6 +112,7 @@ public class BoardController {
                 return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD).findAllBoards(allByHeart).build(), HttpStatus.OK); // 조회 게시글 리턴
             }
         } catch (Exception e) {
+            log.info(e.getMessage());
             return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.INTERNAL_SERVER_ERROR).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -97,6 +131,7 @@ public class BoardController {
                 return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD).findAllBoards(allByUserHeart).build(), HttpStatus.OK); // 조회 게시글 리턴
             }
         } catch (Exception e) {
+            log.info(e.getMessage());
             return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.INTERNAL_SERVER_ERROR).build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

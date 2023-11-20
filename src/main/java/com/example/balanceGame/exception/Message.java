@@ -16,6 +16,7 @@ public class Message {
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 에러";
     public static final String PASSWORD_MISMATCH = "비밀번호가 일치하지 않습니다.";
     public static final String UPDATE_PW = "비밀번호 수정에 성공했습니다.";
+    public static final String UPDATE_PW_FAILED = "비밀번호 수정에 실패했습니다.";
     public static final String REGIST_BOARD = "게시글 등록에 성공했습니다.";
     public static final String REGIST_BOARD_FAILED = "게시글 등록에 실패했습니다.";
     public static final String FIND_BOARD = "게시글 조회에 성공했습니다.";
@@ -29,4 +30,6 @@ public class Message {
     public static final String HEART_REMOVE_FAILED = "좋아요 취소에 실패했습니다.";
     public static final String DELETE_COMMENT = "댓글 삭제에 성공했습니다.";
     public static final String DELETE_COMMENT_FAILED = "댓글 삭제에 실패했습니다.";
+    public static final String DELETE_BOARD = "댓글 삭제에 성공했습니다.";
+    public static final String DELETE_BOARD_FAILED = "댓글 삭제에 실패했습니다.";
 }
