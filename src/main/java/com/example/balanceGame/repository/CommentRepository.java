@@ -37,4 +37,14 @@ public class CommentRepository {
                 .where(comment.board.boardKey.eq(boardKey))
                 .fetch();
     }
+
+    public boolean delete(Comment commentByBoardKeyAndUserKey) {
+        try {
+            em.remove(commentByBoardKeyAndUserKey);
+            return true;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return false;
+        }
+    }
 }

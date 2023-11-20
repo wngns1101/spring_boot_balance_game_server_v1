@@ -1,5 +1,6 @@
 package com.example.balanceGame;
 
+import com.example.balanceGame.controller.http.request.BoardDeleteRequest;
 import com.example.balanceGame.controller.http.request.BoardRegistRequest;
 import com.example.balanceGame.controller.http.request.HeartInsertRequest;
 import com.example.balanceGame.dto.BoardDetailDto;
@@ -45,6 +46,18 @@ public class BoardTest {
 
         // then
         assertThat(regist).isEqualTo(true);
+    }
+
+    @Test
+    public void 게시글삭제테스트() {
+        // given
+        Long boardKey = 1L;
+        Principal principal = () -> "1";
+
+        // when
+        boolean delete = boardService.delete(boardKey, Long.parseLong(principal.getName()));
+
+        assertThat(delete).isTrue();
     }
 
     @Test

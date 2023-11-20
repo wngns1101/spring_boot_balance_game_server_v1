@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardDetailResponse {
+    private String message;
     private Long boardKey;
     private String userName;
     private String boardTitle;
