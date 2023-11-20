@@ -1,5 +1,6 @@
 package com.example.balanceGame.service;
 
+import com.example.balanceGame.controller.http.request.CommentDeleteRequest;
 import com.example.balanceGame.entity.Board;
 import com.example.balanceGame.entity.Comment;
 import com.example.balanceGame.entity.User;
@@ -7,7 +8,7 @@ import com.example.balanceGame.exception.NotFoundException;
 import com.example.balanceGame.repository.BoardRepository;
 import com.example.balanceGame.repository.CommentRepository;
 import com.example.balanceGame.repository.UserRepository;
-import com.example.balanceGame.controller.http.request.CommentRequest;
+import com.example.balanceGame.controller.http.request.CommentRegistRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,22 +27,33 @@ public class CommentService {
 
     // 댓글 등록 메서드
     @Transactional
-    public ResponseEntity regist(CommentRequest commentRequest, Principal principal) {
-        // 유저 정보 조회
-        User user = findUser(Long.parseLong(principal.getName()));
+    public boolean regist(CommentRegistRequest commentRegistRequest, Long userKey) {
+        User user = findUser((userKey)); // 유저 정보 조회
 
-        // 게시글 정보 조회
-        Board board = findBoard(commentRequest.getBoardKey());
+        Board board = findBoard(commentRegistRequest.getBoardKey()); // 게시글 정보 조회
 
-        // 댓글 엔티티 생성
-        Comment comment = Comment.createComment(commentRequest, user, board);
+        Comment comment = Comment.createComment(commentRegistRequest, user, board); // 댓글 엔티티 생성
 
         return commentRepository.regist(comment);
     }
 
+    @Transactional
+    public boolean delete(CommentDeleteRequest commentDeleteRequest, Long userKey) {
+        User user = findUser(userKey);
+        Comment commentByBoardKeyAndUserKey = boardRepository.findCommentByBoardKeyAndUserKey(commentDeleteRequest.getBoardKey(), commentDeleteRequest.getCommentKey(), user.getUserKey());
+
+        if (commentByBoardKeyAndUserKey == null) {
+            return false;
+        }
+
+        return boardRepository.delete(commentByBoardKeyAndUserKey);
+    }
+
     // 유저 조회 메서드
     private User findUser(Long userKey) {
+        // 유저 정보 조회
         User byUserKey = userRepository.findByUserKey(userKey);
+
         // 조회한 유저가 없으면 예외 throw
         if (byUserKey == null) {
             throw new NotFoundException();
@@ -51,7 +63,7 @@ public class CommentService {
     }
 
     private Board findBoard(Long boardKey) {
-        // 유저 정보 조회
+        // 게시글 정보 조회
         Board byBoardKey = boardRepository.findByBoardKey(boardKey);
 
         // 조회한 유저가 없으면 예외 throw

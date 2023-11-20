@@ -19,11 +19,12 @@ public class BoardHeartHistory {
     @Column(name = "heart_key")
     private Long heartKey;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_key")
+    private Board board;
+
     // 유저 정보
     private Long userKey;
-
-    // 게시글 정보
-    private Long boardKey;
 
     // 생성 시간
     private LocalDateTime heartTime;

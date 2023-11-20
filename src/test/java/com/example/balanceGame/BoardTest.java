@@ -87,7 +87,7 @@ public class BoardTest {
             dto.setBoardKey(16L);
 
             HttpHeaders headers = new HttpHeaders(); // jwt 전달할 헤더 객체 생성
-            headers.set("Authorization", "Bearer " + "token1");
+            headers.set("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzAwMDI3OTczLCJleHAiOjE3MDAwMzUxNzN9.oxGU238dRKvFSt8-EPFB9vMIhE29leNsAaZ8-QF_6g0");
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<HeartInsertRequest> request = new HttpEntity<>(dto, headers); // 요청 정보를 전달할 객체 생성
@@ -111,7 +111,7 @@ public class BoardTest {
             dto.setBoardKey(16L);
 
             HttpHeaders headers = new HttpHeaders(); // jwt 전달할 헤더 객체 생성
-            headers.set("Authorization", "Bearer " + "token2");
+            headers.set("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzAwMDI4MDAyLCJleHAiOjE3MDAwMzUyMDJ9.9a2nxarLRXuEHoLcTfjr6FewUi2wPlLoLEhjQJaWExw");
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<HeartInsertRequest> request = new HttpEntity<>(dto, headers); // 요청 정보를 전달할 객체 생성

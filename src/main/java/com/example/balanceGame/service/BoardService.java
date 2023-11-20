@@ -2,7 +2,7 @@ package com.example.balanceGame.service;
 
 import com.example.balanceGame.dto.BoardDetailDto;
 import com.example.balanceGame.dto.CommentDto;
-import com.example.balanceGame.dto.FindAllByDateDto;
+import com.example.balanceGame.dto.FindAllBoard;
 import com.example.balanceGame.entity.Board;
 import com.example.balanceGame.entity.User;
 import com.example.balanceGame.exception.FailedFindException;
@@ -57,10 +57,24 @@ public class BoardService {
     }
 
     // 게시글 리스트 조회 날짜순
-    public List<FindAllByDateDto> findAllByDate(PageRequest pageRequest) {
-        List<FindAllByDateDto> allByDate = boardRepository.findAllByDate(pageRequest); // 날짜 기준으로 20개의 데이터 조회
+    public List<FindAllBoard> findAllByDate(PageRequest pageRequest) {
+        List<FindAllBoard> allByDate = boardRepository.findAllByDate(pageRequest); // 날짜 기준으로 20개의 데이터 조회
 
         return allByDate;
+    }
+
+    // 게시글 리스트 조회 좋아요순
+    public List<FindAllBoard> findAllByHeart(PageRequest pageRequest) {
+        List<FindAllBoard> allByHeart = boardRepository.findAllByHeart(pageRequest); // 좋아요 기준으로 20개의 데이터 조회
+
+        return allByHeart;
+    }
+
+    // 게시글 리스트 조회 사용자가 좋아요 누른 게시글만
+    public List<FindAllBoard> findAllByUserHeart(PageRequest pageRequest, Long userKey) {
+        List<FindAllBoard> allByUserHeart = boardRepository.findAllByUserHeart(pageRequest, userKey); // 사용자가 좋아요 누른 기준으로 20개의 데이터 조회
+
+        return allByUserHeart;
     }
 
     // 유저 조회 메서드
@@ -74,5 +88,4 @@ public class BoardService {
 
         return byUserKey;
     }
-
 }

@@ -28,12 +28,11 @@ public class Board {
     @JoinColumn(name = "user_key")
     private User user;
 
-/*  수정 전 필드
-    수만 가져오려고 할 경우 별도 쿼리가 증가하기 때문에 성능 저하의 원인 유발
-    @OneToOne(mappedBy = "board")
-    private Heart heart;
- */
-    private Long heartCount;
+    // 수만 가져오려고 할 경우 별도 쿼리가 증가하기 때문에 성능 저하의 원인 유발
+    @OneToMany(mappedBy = "board")
+    private List<BoardHeartHistory> heart;
+
+    private Long heartCount = 0L;
 
     @OneToMany(mappedBy = "board")
     private List<Comment> comment;

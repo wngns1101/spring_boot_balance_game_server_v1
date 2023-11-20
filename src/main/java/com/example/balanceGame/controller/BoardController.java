@@ -3,9 +3,10 @@ package com.example.balanceGame.controller;
 import com.example.balanceGame.controller.http.request.BoardRegistRequest;
 import com.example.balanceGame.controller.http.response.BoardDetailResponse;
 import com.example.balanceGame.controller.http.response.FindAllByDateResponse;
+import com.example.balanceGame.controller.http.response.FindAllByHeartResponse;
 import com.example.balanceGame.dto.BoardDetailDto;
 import com.example.balanceGame.dto.CommentDto;
-import com.example.balanceGame.dto.FindAllByDateDto;
+import com.example.balanceGame.dto.FindAllBoard;
 import com.example.balanceGame.exception.Message;
 import com.example.balanceGame.service.BoardService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +36,7 @@ public class BoardController {
         if (regist) {
             return new ResponseEntity(Message.REGIST_BOARD, HttpStatus.OK);
         } else {
-            return new ResponseEntity(Message.FAILED_REGIST_BOARD, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(Message.REGIST_BOARD_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -56,12 +57,47 @@ public class BoardController {
     public ResponseEntity<FindAllByDateResponse> findAllByDate(@RequestParam("page") Integer page, @RequestParam(value = "size", defaultValue = "20", required = false) Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size); // 페이징 객체 생성
 
-        List<FindAllByDateDto> allByDate = boardService.findAllByDate(pageRequest); // 날짜순 리스트 조회
+        List<FindAllBoard> allByDate = boardService.findAllByDate(pageRequest); // 날짜순 리스트 조회
 
         if (allByDate.size() == 0) {
             return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD_FAILED).build(), HttpStatus.OK); // 조회한 게시글이 없을 때
         }
 
-        return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD_SUCCESS).findAllByDateDtos(allByDate).build(), HttpStatus.OK); // 조회 게시글 리턴
+        return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD).findAllBoards(allByDate).build(), HttpStatus.OK); // 조회 게시글 리턴
+    }
+
+    // 게시글 좋아요 순으로 조회
+    @GetMapping("/findAllByHeart")
+    public ResponseEntity<FindAllByHeartResponse> findAllByHeart(@RequestParam("page") Integer page, @RequestParam(value = "size", defaultValue = "20", required = false) Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size); // 페이징 객체 생성
+        try {
+            List<FindAllBoard> allByHeart = boardService.findAllByHeart(pageRequest);
+
+            if (allByHeart.size() == 0) {
+                return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD_FAILED).build(), HttpStatus.OK); // 조회한 게시글이 없을 때
+            } else {
+                return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD).findAllBoards(allByHeart).build(), HttpStatus.OK); // 조회 게시글 리턴
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.INTERNAL_SERVER_ERROR).build(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 사용자가 좋아요 누른 게시글 조회
+    @GetMapping("/findAllByUserHeart")
+    public ResponseEntity<FindAllByHeartResponse> findAllByUserHeart(@RequestParam("page") Integer page, @RequestParam(value = "size", defaultValue = "20", required = false) Integer size, Principal principal) {
+        PageRequest pageRequest = PageRequest.of(page, size); // 페이징 객체 생성
+        long userKey = Long.parseLong(principal.getName());
+        try {
+            List<FindAllBoard> allByUserHeart = boardService.findAllByUserHeart(pageRequest, userKey);
+
+            if (allByUserHeart.size() == 0) {
+                return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD_FAILED).build(), HttpStatus.OK); // 조회한 게시글이 없을 때
+            } else {
+                return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD).findAllBoards(allByUserHeart).build(), HttpStatus.OK); // 조회 게시글 리턴
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.INTERNAL_SERVER_ERROR).build(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

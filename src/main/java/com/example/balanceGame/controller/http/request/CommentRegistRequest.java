@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CommentRequest {
+public class CommentRegistRequest {
     private Long boardKey;
     private String commentContent;
 }

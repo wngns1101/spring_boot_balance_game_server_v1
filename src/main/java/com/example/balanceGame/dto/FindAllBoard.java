@@ -9,11 +9,12 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FindAllByDateDto {
+public class FindAllBoard {
     private long boardKey;
     private String userName;
     private LocalDateTime boardDate;
     private String boardTitle;
     private String leftContent;
     private String rightContent;
+    private Long heartCount;
 }
