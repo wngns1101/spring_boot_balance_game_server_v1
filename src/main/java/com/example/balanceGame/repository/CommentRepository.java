@@ -22,12 +22,12 @@ public class CommentRepository {
     private final EntityManager em;
     private final JPAQueryFactory qm;
 
-    public ResponseEntity regist(Comment comment) {
+    public boolean regist(Comment comment) {
         try {
             em.persist(comment);
-            return new ResponseEntity(Message.REGIST_COMMENT, HttpStatus.OK);
+            return true;
         } catch (PersistenceException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return false;
         }
     }
 

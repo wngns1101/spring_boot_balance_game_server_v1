@@ -2,7 +2,6 @@ package com.example.balanceGame.controller;
 
 import com.example.balanceGame.controller.http.request.HeartDeleteRequest;
 import com.example.balanceGame.controller.http.request.HeartInsertRequest;
-import com.example.balanceGame.exception.InternalServerException;
 import com.example.balanceGame.exception.Message;
 import com.example.balanceGame.service.BoardHeartHistoryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Map;
 
 @Tag(name = "좋아요")
 @Slf4j
@@ -48,7 +46,7 @@ public class BoardHeartHistoryController {
         try {
             boolean delete = boardHeartHistoryService.delete(heartDeleteRequest.getBoardKey(), userKey); // 좋아요 취소 처리
             if (delete) {
-                return new ResponseEntity(Message.HEART_REMOVE_SUCCESS, HttpStatus.OK); // 좋아요 취소 성공했을 때
+                return new ResponseEntity(Message.HEART_REMOVE, HttpStatus.OK); // 좋아요 취소 성공했을 때
             } else {
                 return new ResponseEntity(Message.HEART_REMOVE_FAILED, HttpStatus.INTERNAL_SERVER_ERROR); // 좋아요 취소 실패
             }

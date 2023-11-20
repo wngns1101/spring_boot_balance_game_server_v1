@@ -1,6 +1,7 @@
 package com.example.balanceGame;
 
-import com.example.balanceGame.controller.http.request.CommentRequest;
+import com.example.balanceGame.controller.http.request.CommentDeleteRequest;
+import com.example.balanceGame.controller.http.request.CommentRegistRequest;
 import com.example.balanceGame.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -19,15 +20,35 @@ public class CommentTest {
 
     @Test
     public void 댓글등록테스트() {
-        CommentRequest commentRequest = CommentRequest.builder()
-                .boardKey(2L)
+        // given
+        CommentRegistRequest commentRegistRequest = CommentRegistRequest.builder()
+                .boardKey(16L)
                 .commentContent("아니지 멍청아")
                 .build();
 
-        Principal principal = () -> "test5";
+        Long userKey = 1L;
 
-        ResponseEntity responseEntity = commentService.regist(commentRequest, principal);
+        // when
+        boolean regist = commentService.regist(commentRegistRequest, userKey);
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        // then
+        assertThat(regist).isTrue();
+    }
+
+    @Test
+    public void 댓글삭제테스트() {
+        // given
+        CommentDeleteRequest commentDeleteRequest = CommentDeleteRequest.builder()
+                .boardKey(16L)
+                .commentKey(6L)
+                .build();
+
+        Long userKey = 1L;
+
+        // when
+        boolean delete = commentService.delete(commentDeleteRequest, userKey);
+
+        // then
+        assertThat(delete).isTrue();
     }
 }

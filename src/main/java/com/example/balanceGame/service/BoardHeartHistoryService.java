@@ -40,7 +40,7 @@ public class BoardHeartHistoryService {
 
 
             BoardHeartHistory boardHeartHistory = BoardHeartHistory.builder() // 내역 저장할 엔티티 생성
-                    .boardKey(boardKey)
+                    .board(board)
                     .userKey(userKey)
                     .heartTime(LocalDateTime.now())
                     .build();

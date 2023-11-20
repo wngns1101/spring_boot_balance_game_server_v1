@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FindAllByDateResponse {
+public class FindAllByHeartResponse {
     private String message;
     private List<FindAllBoard> findAllBoards;
 }

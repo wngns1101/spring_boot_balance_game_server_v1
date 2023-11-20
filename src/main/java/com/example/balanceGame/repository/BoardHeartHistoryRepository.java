@@ -19,7 +19,7 @@ public class BoardHeartHistoryRepository {
     public BoardHeartHistory findHeartByBoardIdAndUserId(Long boardKey, Long userKey) {
         return qm.select(boardHeartHistory)
                 .from(boardHeartHistory)
-                .where(boardHeartHistory.boardKey.eq(boardKey).and(boardHeartHistory.userKey.eq(userKey)))
+                .where(boardHeartHistory.board.boardKey.eq(boardKey).and(boardHeartHistory.userKey.eq(userKey)))
                 .fetchOne();
     }
 

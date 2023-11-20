@@ -1,6 +1,6 @@
 package com.example.balanceGame.entity;
 
-import com.example.balanceGame.controller.http.request.CommentRequest;
+import com.example.balanceGame.controller.http.request.CommentRegistRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,15 +32,15 @@ public class Comment {
     // 작성 시간
     private LocalDateTime commentTime;
 
-    public Comment(CommentRequest commentRequest, User user, Board board) {
+    public Comment(CommentRegistRequest commentRegistRequest, User user, Board board) {
         this.board = board;
         this.user = user;
-        this.commentContent = commentRequest.getCommentContent();
+        this.commentContent = commentRegistRequest.getCommentContent();
         this.commentTime = LocalDateTime.now();
     }
 
 
-    public static Comment createComment(CommentRequest commentRequest, User user, Board board) {
-        return new Comment(commentRequest, user, board);
+    public static Comment createComment(CommentRegistRequest commentRegistRequest, User user, Board board) {
+        return new Comment(commentRegistRequest, user, board);
     }
 }

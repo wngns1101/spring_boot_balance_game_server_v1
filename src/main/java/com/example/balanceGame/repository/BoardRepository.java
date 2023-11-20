@@ -1,27 +1,21 @@
 package com.example.balanceGame.repository;
 
 import com.example.balanceGame.dto.BoardDetailDto;
-import com.example.balanceGame.dto.FindAllByDateDto;
+import com.example.balanceGame.dto.FindAllBoard;
 import com.example.balanceGame.entity.Board;
-import com.example.balanceGame.exception.Message;
+import com.example.balanceGame.entity.Comment;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.balanceGame.entity.QBoard.board;
 import static com.example.balanceGame.entity.QComment.comment;
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.list;
 
 @Slf4j
 @Repository
@@ -51,12 +45,49 @@ public class BoardRepository {
         return boardHeartDto;
     }
 
-    public List<FindAllByDateDto> findAllByDate(PageRequest pageRequest) {
-        return qm.select(Projections.bean(FindAllByDateDto.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent))
+    public List<FindAllBoard> findAllByDate(PageRequest pageRequest) {
+        return qm.select(Projections.bean(FindAllBoard.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent, board.heartCount))
                 .from(board)
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
                 .orderBy(board.boardDate.desc())
                 .fetch();
+    }
+
+    public List<FindAllBoard> findAllByHeart(PageRequest pageRequest) {
+        return qm.select(Projections.bean(FindAllBoard.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent, board.heartCount))
+                .from(board)
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
+                .orderBy(board.heartCount.desc())
+                .fetch();
+    }
+
+    public List<FindAllBoard> findAllByUserHeart(PageRequest pageRequest, Long userKey) {
+        return qm.select(Projections.bean(FindAllBoard.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent, board.heartCount))
+                .from(board)
+                .where(board.heart.any().userKey.eq(userKey))
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize())
+                .orderBy(board.heart.any().heartTime.desc())
+                .fetch();
+    }
+
+    public Comment findCommentByBoardKeyAndUserKey(Long boardKey, Long commentKey, Long userKey) {
+        return qm.selectFrom(comment)
+                .where(comment.board.boardKey.eq(boardKey)
+                        .and(comment.commentKey.eq(commentKey))
+                        .and(comment.user.userKey.eq(userKey)))
+                .fetchOne();
+    }
+
+    public boolean delete(Comment commentByBoardKeyAndUserKey) {
+        try {
+            em.remove(commentByBoardKeyAndUserKey);
+            return true;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return false;
+        }
     }
 }
