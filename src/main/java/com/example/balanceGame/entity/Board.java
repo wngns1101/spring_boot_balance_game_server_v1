@@ -47,10 +47,10 @@ public class Board {
     private String rightContent;
 
     // 왼쪽을 누른 count
-    private int leftCount = 0;
+    private Long leftCount = 0L;
 
     // 오른쪽을 누른 count
-    private int rightCount = 0;
+    private Long rightCount = 0L;
 
     // 작성 시간
     private LocalDateTime boardDate;
@@ -88,6 +88,34 @@ public class Board {
     public void minusHeartCount() {
         if (this.heartCount != null && this.heartCount != 0) {
             this.heartCount -= 1;
+        }
+    }
+
+    public void plusLeftCount() {
+        if (this.leftCount == null){
+            this.leftCount = 1L; // 초기화되지 않은 경우 1로 초기화
+        } else {
+            this.leftCount += 1; // 이미 초기화된 경우 증가
+        }
+    }
+
+    public void minusLeftCount() {
+        if (this.leftCount != null && this.leftCount != 0) {
+            this.leftCount -= 1;
+        }
+    }
+
+    public void plusRightCount() {
+        if (this.rightCount == null){
+            this.rightCount = 1L; // 초기화되지 않은 경우 1로 초기화
+        } else {
+            this.rightCount += 1; // 이미 초기화된 경우 증가
+        }
+    }
+
+    public void minusRightCount() {
+        if (this.rightCount != null && this.rightCount != 0) {
+            this.rightCount -= 1;
         }
     }
 }

@@ -1,8 +1,9 @@
 package com.example.balanceGame.repository;
 
 import com.example.balanceGame.dto.BoardDetailDto;
-import com.example.balanceGame.dto.FindAllBoard;
+import com.example.balanceGame.dto.FindAllBoardDto;
 import com.example.balanceGame.entity.Board;
+import com.example.balanceGame.entity.BoardGameResult;
 import com.example.balanceGame.entity.Comment;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static com.example.balanceGame.entity.QBoard.board;
 import static com.example.balanceGame.entity.QComment.comment;
-
+import static com.example.balanceGame.entity.QBoardGameResult.boardGameResult;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ public class BoardRepository {
             em.persist(board);
             return true;
         } catch (IllegalArgumentException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -44,7 +46,7 @@ public class BoardRepository {
         return em.find(Board.class, boardkey);
     }
 
-    public BoardDetailDto findBoardAndHeart(long boardKey) {
+    public BoardDetailDto findBoardAndHeartByBoardKey(long boardKey) {
         BoardDetailDto boardHeartDto = qm.select(Projections.bean(BoardDetailDto.class, board.boardKey, board.user.userName, board.boardTitle, board.leftContent, board.rightContent, board.leftCount, board.rightCount, board.heartCount))
                 .from(board)
                 .where(board.boardKey.eq(boardKey))
@@ -52,8 +54,8 @@ public class BoardRepository {
         return boardHeartDto;
     }
 
-    public List<FindAllBoard> findAllByDate(PageRequest pageRequest) {
-        return qm.select(Projections.bean(FindAllBoard.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent, board.heartCount))
+    public List<FindAllBoardDto> findAllByDate(PageRequest pageRequest) {
+        return qm.select(Projections.bean(FindAllBoardDto.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent, board.heartCount))
                 .from(board)
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
@@ -61,8 +63,8 @@ public class BoardRepository {
                 .fetch();
     }
 
-    public List<FindAllBoard> findAllByHeart(PageRequest pageRequest) {
-        return qm.select(Projections.bean(FindAllBoard.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent, board.heartCount))
+    public List<FindAllBoardDto> findAllByHeart(PageRequest pageRequest) {
+        return qm.select(Projections.bean(FindAllBoardDto.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent, board.heartCount))
                 .from(board)
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
@@ -70,8 +72,8 @@ public class BoardRepository {
                 .fetch();
     }
 
-    public List<FindAllBoard> findAllByUserHeart(PageRequest pageRequest, Long userKey) {
-        return qm.select(Projections.bean(FindAllBoard.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent, board.heartCount))
+    public List<FindAllBoardDto> findAllByUserHeart(PageRequest pageRequest, Long userKey) {
+        return qm.select(Projections.bean(FindAllBoardDto.class, board.boardKey, board.user.userName, board.boardDate, board.boardTitle, board.leftContent, board.rightContent, board.heartCount))
                 .from(board)
                 .where(board.heart.any().userKey.eq(userKey))
                 .offset(pageRequest.getOffset())
@@ -94,7 +96,13 @@ public class BoardRepository {
             em.remove(byBoardKeyAndUserKey);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
+    }
+
+    public BoardGameResult findBoardGameResultByUserKeyAndBoardKey(Long boardKey, long userKey) {
+        return qm.selectFrom(boardGameResult)
+                .where(boardGameResult.boardKey.eq(boardKey).and(boardGameResult.userKey.eq(userKey))).fetchOne();
     }
 }

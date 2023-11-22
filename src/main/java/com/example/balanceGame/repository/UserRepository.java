@@ -1,16 +1,10 @@
 package com.example.balanceGame.repository;
 
 import com.example.balanceGame.entity.User;
-import com.example.balanceGame.exception.Message;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceException;
-import jakarta.persistence.TransactionRequiredException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import static com.example.balanceGame.entity.QUser.user;
@@ -42,7 +36,8 @@ public class UserRepository {
             // persist 작업 수행
             em.persist(user);
             return true;
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -51,7 +46,8 @@ public class UserRepository {
         try {
             em.remove(user);
             return true;
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

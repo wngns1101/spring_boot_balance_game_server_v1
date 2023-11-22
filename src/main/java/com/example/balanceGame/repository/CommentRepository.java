@@ -2,15 +2,11 @@ package com.example.balanceGame.repository;
 
 import com.example.balanceGame.dto.CommentDto;
 import com.example.balanceGame.entity.Comment;
-import com.example.balanceGame.exception.Message;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,7 +22,8 @@ public class CommentRepository {
         try {
             em.persist(comment);
             return true;
-        } catch (PersistenceException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -43,7 +40,7 @@ public class CommentRepository {
             em.remove(commentByBoardKeyAndUserKey);
             return true;
         } catch (Exception e) {
-            log.info(e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }

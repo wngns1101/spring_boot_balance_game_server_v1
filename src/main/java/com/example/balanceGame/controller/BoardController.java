@@ -7,7 +7,7 @@ import com.example.balanceGame.controller.http.response.FindAllByDateResponse;
 import com.example.balanceGame.controller.http.response.FindAllByHeartResponse;
 import com.example.balanceGame.dto.BoardDetailDto;
 import com.example.balanceGame.dto.CommentDto;
-import com.example.balanceGame.dto.FindAllBoard;
+import com.example.balanceGame.dto.FindAllBoardDto;
 import com.example.balanceGame.exception.InternalServerException;
 import com.example.balanceGame.exception.Message;
 import com.example.balanceGame.service.BoardService;
@@ -86,12 +86,12 @@ public class BoardController {
     public ResponseEntity<FindAllByDateResponse> findAllByDate(@RequestParam("page") Integer page, @RequestParam(value = "size", defaultValue = "20", required = false) Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size); // 페이징 객체 생성
         try {
-            List<FindAllBoard> allByDate = boardService.findAllByDate(pageRequest); // 날짜순 리스트 조회
+            List<FindAllBoardDto> allByDate = boardService.findAllByDate(pageRequest); // 날짜순 리스트 조회
 
             if (allByDate.size() == 0) {
                 return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD_FAILED).build(), HttpStatus.OK); // 조회한 게시글이 없을 때
             }else{
-                return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD).findAllBoards(allByDate).build(), HttpStatus.OK); // 조회 게시글 리턴
+                return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD).findAllBoardDtos(allByDate).build(), HttpStatus.OK); // 조회 게시글 리턴
             }
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -104,12 +104,12 @@ public class BoardController {
     public ResponseEntity<FindAllByHeartResponse> findAllByHeart(@RequestParam("page") Integer page, @RequestParam(value = "size", defaultValue = "20", required = false) Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size); // 페이징 객체 생성
         try {
-            List<FindAllBoard> allByHeart = boardService.findAllByHeart(pageRequest);
+            List<FindAllBoardDto> allByHeart = boardService.findAllByHeart(pageRequest);
 
             if (allByHeart.size() == 0) {
                 return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD_FAILED).build(), HttpStatus.OK); // 조회한 게시글이 없을 때
             } else {
-                return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD).findAllBoards(allByHeart).build(), HttpStatus.OK); // 조회 게시글 리턴
+                return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD).findAllBoardDtos(allByHeart).build(), HttpStatus.OK); // 조회 게시글 리턴
             }
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -123,12 +123,12 @@ public class BoardController {
         PageRequest pageRequest = PageRequest.of(page, size); // 페이징 객체 생성
         long userKey = Long.parseLong(principal.getName());
         try {
-            List<FindAllBoard> allByUserHeart = boardService.findAllByUserHeart(pageRequest, userKey);
+            List<FindAllBoardDto> allByUserHeart = boardService.findAllByUserHeart(pageRequest, userKey);
 
             if (allByUserHeart.size() == 0) {
                 return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD_FAILED).build(), HttpStatus.OK); // 조회한 게시글이 없을 때
             } else {
-                return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD).findAllBoards(allByUserHeart).build(), HttpStatus.OK); // 조회 게시글 리턴
+                return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.FIND_BOARD).findAllBoardDtos(allByUserHeart).build(), HttpStatus.OK); // 조회 게시글 리턴
             }
         } catch (Exception e) {
             log.info(e.getMessage());
