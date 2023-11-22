@@ -20,8 +20,8 @@ public class BoardDetailResponse {
     private String boardTitle;
     private String leftContent;
     private String rightContent;
-    private int leftCount;
-    private int rightCount;
+    private Long leftCount;
+    private Long rightCount;
     private Long heartCount;
     private List<CommentDto> commentList;
 

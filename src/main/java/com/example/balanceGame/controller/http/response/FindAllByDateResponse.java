@@ -1,6 +1,6 @@
 package com.example.balanceGame.controller.http.response;
 
-import com.example.balanceGame.dto.FindAllBoard;
+import com.example.balanceGame.dto.FindAllBoardDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +14,5 @@ import java.util.List;
 @AllArgsConstructor
 public class FindAllByDateResponse {
     private String message;
-    private List<FindAllBoard> findAllBoards;
+    private List<FindAllBoardDto> findAllBoardDtos;
 }

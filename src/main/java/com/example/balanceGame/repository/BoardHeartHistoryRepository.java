@@ -17,8 +17,7 @@ public class BoardHeartHistoryRepository {
 
     // 좋아요 한 유저 조회 메서드
     public BoardHeartHistory findHeartByBoardIdAndUserId(Long boardKey, Long userKey) {
-        return qm.select(boardHeartHistory)
-                .from(boardHeartHistory)
+        return qm.selectFrom(boardHeartHistory)
                 .where(boardHeartHistory.board.boardKey.eq(boardKey).and(boardHeartHistory.userKey.eq(userKey)))
                 .fetchOne();
     }
@@ -28,7 +27,8 @@ public class BoardHeartHistoryRepository {
         try {
             em.persist(boardHeartHistory);
             return true;
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -37,8 +37,8 @@ public class BoardHeartHistoryRepository {
         try {
             em.remove(boardHeartHistory);
             return true;
-        } catch (IllegalArgumentException e) {
-            log.info("IllegalArgumentException Error");
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
