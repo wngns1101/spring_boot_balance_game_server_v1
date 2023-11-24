@@ -4,6 +4,7 @@ import com.example.balanceGame.dto.BoardDetailDto;
 import com.example.balanceGame.dto.FindAllBoardDto;
 import com.example.balanceGame.entity.Board;
 import com.example.balanceGame.entity.BoardGameResult;
+import com.example.balanceGame.entity.BoardReport;
 import com.example.balanceGame.entity.Comment;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -104,5 +105,15 @@ public class BoardRepository {
     public BoardGameResult findBoardGameResultByUserKeyAndBoardKey(Long boardKey, long userKey) {
         return qm.selectFrom(boardGameResult)
                 .where(boardGameResult.boardKey.eq(boardKey).and(boardGameResult.userKey.eq(userKey))).fetchOne();
+    }
+
+    public boolean report(BoardReport boardReport) {
+        try {
+            em.persist(boardReport);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

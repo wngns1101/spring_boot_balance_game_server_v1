@@ -89,20 +89,18 @@ public class UserController {
 
     // 회원 정보 수정 컨트롤러
     @PutMapping("/modify")
-    public ResponseEntity<ModifyResponse> modify(@RequestBody ModifyRequest modifyRequest, Principal principal) {
+    public ResponseEntity modify(@RequestBody ModifyRequest modifyRequest, Principal principal) {
         log.info("modify controller");
         try {
-            String token = userService.modify(modifyRequest, principal); // 회원 정보 수정
-
-            ModifyResponse response = ModifyResponse.builder() // response 생성
-                    .message(Message.UPDATE_USER)
-                    .token(token)
-                    .build();
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            boolean modify = userService.modify(modifyRequest, principal);// 회원 정보 수정
+            if (modify == true) {
+                return new ResponseEntity<>(Message.MODIFY_USER_SUCCESS, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(Message.MODIFY_USER_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } catch (Exception e) {
-            log.info(e.getMessage());
-            throw new InternalServerException("서버 오류입니다.");
+            e.printStackTrace();
+            return new ResponseEntity<>(Message.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

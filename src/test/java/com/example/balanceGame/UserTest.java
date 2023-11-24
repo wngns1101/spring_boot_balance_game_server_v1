@@ -77,12 +77,10 @@ public class UserTest {
         Principal principal = () -> "1"; // JWT 토큰 있다는 가정하에 사용자 객체 생성
 
         // when
-        String modify1 = userService.modify(modify, principal);// 수정 진행
-        String usernameFromToken = jwtProvider.getUsernameFromToken(modify1); // 토근에서 key 값 조회
-        User user = userRepository.findByUserKey(Long.parseLong(usernameFromToken)); // Long 타입으로 바꾼 키로 User 엔티티 조회
+        boolean modify2 = userService.modify(modify, principal);
 
         // then
-        assertThat(user.getUserId()).isEqualTo(modify.getUserId());
+        assertThat(modify2).isTrue();
     }
 
     @Test

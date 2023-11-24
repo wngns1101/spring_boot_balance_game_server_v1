@@ -1,7 +1,9 @@
 package com.example.balanceGame.controller;
 
 import com.example.balanceGame.controller.http.request.BoardDeleteRequest;
+import com.example.balanceGame.controller.http.request.BoardModifyRequest;
 import com.example.balanceGame.controller.http.request.BoardRegistRequest;
+import com.example.balanceGame.controller.http.request.BoardReportRequest;
 import com.example.balanceGame.controller.http.response.BoardDetailResponse;
 import com.example.balanceGame.controller.http.response.FindAllByDateResponse;
 import com.example.balanceGame.controller.http.response.FindAllByHeartResponse;
@@ -60,6 +62,23 @@ public class BoardController {
             }
         } catch (Exception e) {
             log.info(e.getMessage());
+            return new ResponseEntity(Message.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 게시글 수정 controller
+    @PatchMapping("/modify")
+    public ResponseEntity modify(@RequestBody BoardModifyRequest boardModifyRequest, Principal principal) {
+        try {
+            Long userKey = Long.valueOf(principal.getName());
+            boolean modify = boardService.modify(boardModifyRequest, userKey);
+            if (modify) {
+                return new ResponseEntity(Message.MODIFY_BOARD_SUCCESS, HttpStatus.OK);
+            } else {
+                return new ResponseEntity(Message.MODIFY_BOARD_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity(Message.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -133,6 +152,21 @@ public class BoardController {
         } catch (Exception e) {
             log.info(e.getMessage());
             return new ResponseEntity<>(FindAllByHeartResponse.builder().message(Message.INTERNAL_SERVER_ERROR).build(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/report")
+    public ResponseEntity report(@RequestBody BoardReportRequest boardReportRequest, Principal principal) {
+        try {
+            Long userKey = Long.valueOf(principal.getName());
+            boolean report = boardService.report(boardReportRequest, userKey);
+            if (report) {
+                return new ResponseEntity(Message.REPORT_REGIST_SUCCESS, HttpStatus.OK);
+            } else {
+                return new ResponseEntity(Message.REPORT_REGIST_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity(Message.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

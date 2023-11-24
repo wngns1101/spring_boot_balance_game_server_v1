@@ -2,6 +2,7 @@ package com.example.balanceGame;
 
 import com.example.balanceGame.controller.http.request.CommentDeleteRequest;
 import com.example.balanceGame.controller.http.request.CommentRegistRequest;
+import com.example.balanceGame.controller.http.request.CommentReportRequest;
 import com.example.balanceGame.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -50,5 +51,18 @@ public class CommentTest {
 
         // then
         assertThat(delete).isTrue();
+    }
+
+    @Test
+    public void 댓글신고테스트() {
+        // given
+        CommentReportRequest commentReportRequest = new CommentReportRequest(1L, "댓글이 이게 뭐임", "진짜 쓰레기네");
+        Long userKey = 1L;
+
+        // when
+        boolean report = commentService.report(commentReportRequest, userKey);
+
+        // then
+        assertThat(report).isTrue();
     }
 }

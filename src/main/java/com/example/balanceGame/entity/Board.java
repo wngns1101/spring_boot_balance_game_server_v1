@@ -1,5 +1,6 @@
 package com.example.balanceGame.entity;
 
+import com.example.balanceGame.controller.http.request.BoardModifyRequest;
 import com.example.balanceGame.controller.http.request.BoardRegistRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -75,6 +76,13 @@ public class Board {
 
     public static Board createBoard(BoardRegistRequest boardRegistRequest, User user) {
         return new Board(boardRegistRequest, user);
+    }
+
+    public void modifyBoard(BoardModifyRequest boardModifyRequest) {
+        this.boardTitle = boardModifyRequest.getBoardTitle();
+        this.leftContent = boardModifyRequest.getLeftContent();
+        this.rightContent = boardModifyRequest.getRightContent();
+        this.boardDate = LocalDateTime.now();
     }
 
     public void plusHeartCount() {

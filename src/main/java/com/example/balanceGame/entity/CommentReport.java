@@ -20,14 +20,10 @@ public class CommentReport {
     private Long reportKey;
 
     // 댓글 신고자
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_key")
-    private User user;
+    private Long userKey;
 
     // 신고할 댓글
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_key")
-    private Comment commentKey;
+    private Long commentKey;
 
     // 신고 제목
     private String reportTitle;

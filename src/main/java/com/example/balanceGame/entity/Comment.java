@@ -2,6 +2,8 @@ package com.example.balanceGame.entity;
 
 import com.example.balanceGame.controller.http.request.CommentRegistRequest;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +11,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Comment {
     // 기본키 생성 전략
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
