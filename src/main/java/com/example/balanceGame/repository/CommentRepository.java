@@ -2,6 +2,7 @@ package com.example.balanceGame.repository;
 
 import com.example.balanceGame.dto.CommentDto;
 import com.example.balanceGame.entity.Comment;
+import com.example.balanceGame.entity.CommentReport;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -38,6 +39,20 @@ public class CommentRepository {
     public boolean delete(Comment commentByBoardKeyAndUserKey) {
         try {
             em.remove(commentByBoardKeyAndUserKey);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Comment findByCommentKey(Long commentKey) {
+        return qm.selectFrom(comment).where(comment.commentKey.eq(commentKey)).fetchOne();
+    }
+
+    public boolean report(CommentReport commentReportBuilder) {
+        try {
+            em.persist(commentReportBuilder);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

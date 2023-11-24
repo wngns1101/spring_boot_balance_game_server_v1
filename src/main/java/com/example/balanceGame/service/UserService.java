@@ -80,24 +80,19 @@ public class UserService {
 
     // 수정 메서드
     @Transactional
-    public String modify(ModifyRequest modifyRequest, Principal principal) {
+    public boolean modify(ModifyRequest modifyRequest, Principal principal) {
 
         validateDuplicateUserId(modifyRequest.getUserId()); // 수정할 아이디 중복 조회
 
 
         User byUserId = findUser(Long.parseLong(principal.getName())); // 유저 정보 조회
 
-
-        byUserId.modifyUser(modifyRequest); // 유저 정보 수정
-
-
-        String token = jwtProvider.createToken(byUserId.getUserKey()); // 토큰 재발급
-
-        if (token == null) {
-            throw new FailedRegenerateTokenException(); // token이 null이면 throw
+        try {
+            byUserId.modifyUser(modifyRequest); // 유저 정보 수정
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-
-        return token;
     }
 
     // 비밀번호 수정 메서드

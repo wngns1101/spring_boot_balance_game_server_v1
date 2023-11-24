@@ -1,15 +1,16 @@
 package com.example.balanceGame.service;
 
+import com.example.balanceGame.controller.http.request.BoardModifyRequest;
+import com.example.balanceGame.controller.http.request.BoardReportRequest;
 import com.example.balanceGame.dto.BoardDetailDto;
 import com.example.balanceGame.dto.CommentDto;
 import com.example.balanceGame.dto.FindAllBoardDto;
 import com.example.balanceGame.entity.Board;
+import com.example.balanceGame.entity.BoardReport;
 import com.example.balanceGame.entity.User;
 import com.example.balanceGame.exception.FailedFindException;
 import com.example.balanceGame.exception.NotFoundException;
-import com.example.balanceGame.repository.BoardRepository;
-import com.example.balanceGame.repository.CommentRepository;
-import com.example.balanceGame.repository.UserRepository;
+import com.example.balanceGame.repository.*;
 import com.example.balanceGame.controller.http.request.BoardRegistRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -49,6 +51,23 @@ public class BoardService {
         log.info(byBoardKeyAndUserKey.toString());
 
         return boardRepository.delete(byBoardKeyAndUserKey);
+    }
+
+    // 게시글 수정
+    @Transactional
+    public boolean modify(BoardModifyRequest boardModifyRequest, Long userKey) {
+        Board byBoardKeyAndUserKey = boardRepository.findByBoardKeyAndUserKey(boardModifyRequest.getBoardKey(), userKey);
+
+        if (byBoardKeyAndUserKey == null) {
+            throw new FailedFindException();
+        }
+        try {
+            byBoardKeyAndUserKey.modifyBoard(boardModifyRequest);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // 게시글 상세 조회 메서드
@@ -88,6 +107,25 @@ public class BoardService {
         List<FindAllBoardDto> allByUserHeart = boardRepository.findAllByUserHeart(pageRequest, userKey); // 사용자가 좋아요 누른 기준으로 20개의 데이터 조회
 
         return allByUserHeart;
+    }
+
+    @Transactional
+    public boolean report(BoardReportRequest boardReportRequest, Long userKey) {
+        Board byBoardKey = boardRepository.findByBoardKey(boardReportRequest.getBoardKey());
+
+        if (byBoardKey == null) {
+            throw new FailedFindException();
+        }
+
+        BoardReport boardReport = BoardReport.builder()
+                .boardKey(boardReportRequest.getBoardKey())
+                .userKey(userKey)
+                .reportTitle(boardReportRequest.getReportTitle())
+                .reportContent(boardReportRequest.getReportContent())
+                .reportDate(LocalDateTime.now())
+                .build();
+
+        return boardRepository.report(boardReport);
     }
 
     // 유저 조회 메서드

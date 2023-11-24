@@ -1,9 +1,6 @@
 package com.example.balanceGame;
 
-import com.example.balanceGame.controller.http.request.BoardGameDeleteRequest;
-import com.example.balanceGame.controller.http.request.BoardGameStartRequest;
-import com.example.balanceGame.controller.http.request.BoardRegistRequest;
-import com.example.balanceGame.controller.http.request.HeartInsertRequest;
+import com.example.balanceGame.controller.http.request.*;
 import com.example.balanceGame.dto.BoardDetailDto;
 import com.example.balanceGame.dto.CommentDto;
 import com.example.balanceGame.repository.BoardGameResultRepository;
@@ -57,6 +54,19 @@ public class BoardTest {
 
         // then
         assertThat(regist).isEqualTo(true);
+    }
+
+    @Test
+    public void 게시글_수정_테스트() {
+        // given
+        BoardModifyRequest boardModifyRequest = new BoardModifyRequest(1L, "수정테스트", "됐음", "안 됐음");
+        Long userKey = 1L;
+
+        // when
+        boardService.modify(boardModifyRequest, userKey);
+
+        // then
+        assertThat(boardRepository.findByBoardKeyAndUserKey(1L, userKey).getBoardTitle()).isEqualTo(boardModifyRequest.getBoardTitle());
     }
 
     @Test
@@ -254,6 +264,19 @@ public class BoardTest {
 
         // 동시에 api를 호출 했을 때 동시성 문제가 생겼을 떄 낙관적 락을 사용해 예외를 throw 했기 때문에 증가는 1이 되어야한다.
         assertThat(boardService.findBoardProfile(1L).getHeartCount()).isEqualTo(1L);
+    }
+
+    @Test
+    public void 게시글_신고_테스트() {
+        // given
+        BoardReportRequest boardReportRequest = new BoardReportRequest(1L, "어이가없네요", "이상한 내용 입니다.");
+        Long userKey = 1L;
+
+        // when
+        boolean report = boardService.report(boardReportRequest, userKey);
+
+        // then
+        assertThat(report).isTrue();
     }
 }
 

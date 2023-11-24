@@ -1,9 +1,12 @@
 package com.example.balanceGame.service;
 
 import com.example.balanceGame.controller.http.request.CommentDeleteRequest;
+import com.example.balanceGame.controller.http.request.CommentReportRequest;
 import com.example.balanceGame.entity.Board;
 import com.example.balanceGame.entity.Comment;
+import com.example.balanceGame.entity.CommentReport;
 import com.example.balanceGame.entity.User;
+import com.example.balanceGame.exception.FailedFindException;
 import com.example.balanceGame.exception.NotFoundException;
 import com.example.balanceGame.repository.BoardRepository;
 import com.example.balanceGame.repository.CommentRepository;
@@ -11,11 +14,11 @@ import com.example.balanceGame.repository.UserRepository;
 import com.example.balanceGame.controller.http.request.CommentRegistRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -49,6 +52,24 @@ public class CommentService {
         return commentRepository.delete(commentByBoardKeyAndUserKey);
     }
 
+    @Transactional
+    public boolean report(CommentReportRequest commentReportRequest, Long userKey) {
+        Comment byCommentKey = commentRepository.findByCommentKey(commentReportRequest.getCommentKey());
+
+        if (byCommentKey == null) {
+            throw new FailedFindException();
+        }
+
+       CommentReport commentReportBuilder = CommentReport.builder()
+                .commentKey(commentReportRequest.getCommentKey())
+                .userKey(userKey)
+                .reportTitle(commentReportRequest.getCommentTitle())
+                .reportContent(commentReportRequest.getCommentContent())
+                .commentTime(LocalDateTime.now()).build();
+
+       return commentRepository.report(commentReportBuilder);
+    }
+
     // 유저 조회 메서드
     private User findUser(Long userKey) {
         // 유저 정보 조회
@@ -73,4 +94,5 @@ public class CommentService {
 
         return byBoardKey;
     }
+
 }

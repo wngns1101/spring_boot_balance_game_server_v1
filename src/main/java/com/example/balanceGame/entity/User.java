@@ -50,13 +50,6 @@ public class User{
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
-    // 신고 내역
-    @OneToMany(mappedBy = "user")
-    private List<BoardReport> boardReports;
-
-    @OneToMany(mappedBy = "user")
-    private List<CommentReport> commentReports;
-
     // 유저 정보를 수정하는 비즈니스 로직
     public void modifyUser(ModifyRequest modifyRequest) {
         this.userId = modifyRequest.getUserId();

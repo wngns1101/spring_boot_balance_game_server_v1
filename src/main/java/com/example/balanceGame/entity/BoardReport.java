@@ -1,5 +1,6 @@
 package com.example.balanceGame.entity;
 
+import com.example.balanceGame.controller.http.request.BoardReportRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,14 +21,10 @@ public class BoardReport {
     private Long reportKey;
 
     // 게시글 신고자
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_key")
-    private User user;
+    private Long userKey;
 
     // 신고할 게시글
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_key")
-    private Board board;
+    private Long boardKey;
 
     // 신고 제목
     private String reportTitle;
@@ -37,5 +34,4 @@ public class BoardReport {
 
     // 신고 날짜
     private LocalDateTime reportDate;
-
 }

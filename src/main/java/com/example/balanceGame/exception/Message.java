@@ -10,7 +10,8 @@ public class Message {
     public static final String NOT_FOUND_USER = "회원을 찾을 수 없습니다.";
     public static final String CREATED_USER = "회원 가입 성공";
     public static final String CREATED_USER_FAILED = "회원 가입 실패";
-    public static final String UPDATE_USER = "회원 정보 수정 성공";
+    public static final String MODIFY_USER_SUCCESS = "회원 정보 수정 성공";
+    public static final String MODIFY_USER_FAILED = "회원 정보 수정 실패";
     public static final String DELETE_USER = "회원 탈퇴를 성공했습니다.";
     public static final String DELETE_USER_FAILED = "회원 탈퇴 성공";
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 에러";
@@ -30,6 +31,8 @@ public class Message {
     public static final String HEART_REMOVE_FAILED = "좋아요 취소에 실패했습니다.";
     public static final String DELETE_COMMENT = "댓글 삭제에 성공했습니다.";
     public static final String DELETE_COMMENT_FAILED = "댓글 삭제에 실패했습니다.";
-    public static final String DELETE_BOARD = "댓글 삭제에 성공했습니다.";
-    public static final String DELETE_BOARD_FAILED = "댓글 삭제에 실패했습니다.";
+    public static final String MODIFY_BOARD_SUCCESS = "게시글 수정에 성공했습니다.";
+    public static final String MODIFY_BOARD_FAILED = "게시글 수정에 실패했습니다.";
+    public static final String REPORT_REGIST_SUCCESS = "신고를 접수했습니다.";
+    public static final String REPORT_REGIST_FAILED = "신고 접수에 실패했습니다.";
 }
