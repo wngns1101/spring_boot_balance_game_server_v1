@@ -48,7 +48,7 @@ public class BoardRepository {
     }
 
     public BoardDetailDto findBoardAndHeartByBoardKey(long boardKey) {
-        BoardDetailDto boardHeartDto = qm.select(Projections.bean(BoardDetailDto.class, board.boardKey, board.user.userName, board.boardTitle, board.leftContent, board.rightContent, board.leftCount, board.rightCount, board.heartCount))
+        BoardDetailDto boardHeartDto = qm.select(Projections.bean(BoardDetailDto.class, board.boardKey, board.user.userName, board.boardTitle, board.leftContent, board.rightContent, board.leftCount, board.rightCount, board.heartCount, board.boardDate))
                 .from(board)
                 .where(board.boardKey.eq(boardKey))
                 .fetchOne();

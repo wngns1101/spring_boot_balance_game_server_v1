@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -23,6 +24,7 @@ public class BoardDetailResponse {
     private Long leftCount;
     private Long rightCount;
     private Long heartCount;
+    private LocalDateTime boardDate;
     private List<CommentDto> commentList;
 
     public BoardDetailResponse(BoardDetailDto boardHeartDto, List<CommentDto> comment) {
@@ -34,6 +36,7 @@ public class BoardDetailResponse {
         this.leftCount = boardHeartDto.getLeftCount();
         this.rightCount = boardHeartDto.getRightCount();
         this.heartCount = boardHeartDto.getHeartCount();
+        this.boardDate = boardHeartDto.getBoardDate();
         this.commentList = comment;
     }
 }
