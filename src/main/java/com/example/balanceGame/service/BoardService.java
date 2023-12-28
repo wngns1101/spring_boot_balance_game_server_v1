@@ -32,7 +32,7 @@ public class BoardService {
 
     // 게시글 등록
     @Transactional
-    public boolean regist(BoardRegistRequest boardRegistRequest, Principal principal) {
+    public Long regist(BoardRegistRequest boardRegistRequest, Principal principal) {
         User user = findUser(Long.parseLong(principal.getName())); // 사용자 추출
 
         Board board = Board.createBoard(boardRegistRequest, user); // 게시글 생성

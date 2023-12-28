@@ -50,10 +50,10 @@ public class BoardTest {
         Principal principal = () -> "1";
 
         // when
-        boolean regist = boardService.regist(boardRegistRequest, principal);// 게시글 저장
+        Long regist = boardService.regist(boardRegistRequest, principal);// 게시글 저장
 
         // then
-        assertThat(regist).isEqualTo(true);
+        assertThat(regist).isEqualTo(boardService.findBoardProfile(regist).getBoardKey());
     }
 
     @Test

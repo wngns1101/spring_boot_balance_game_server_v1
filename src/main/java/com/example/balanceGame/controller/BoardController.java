@@ -34,18 +34,17 @@ public class BoardController {
 
      // 게시글 등록 controller
     @PostMapping("/regist")
-    public ResponseEntity regist(@RequestBody BoardRegistRequest boardRegistRequest, Principal principal) {
+    public ResponseEntity<Long> regist(@RequestBody BoardRegistRequest boardRegistRequest, Principal principal) {
         try {
-            boolean regist = boardService.regist(boardRegistRequest, principal);
-
-            if (regist) {
-                return new ResponseEntity(Message.REGIST_BOARD, HttpStatus.OK);
+            Long registBoardKey = boardService.regist(boardRegistRequest, principal);
+            if (registBoardKey != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(registBoardKey);
             } else {
-                return new ResponseEntity(Message.REGIST_BOARD_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
             }
         } catch (Exception e) {
             log.info(e.getMessage());
-            return new ResponseEntity(Message.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -107,7 +106,7 @@ public class BoardController {
         try {
             List<FindAllBoardDto> allByDate = boardService.findAllByDate(pageRequest); // 날짜순 리스트 조회
 
-            if (allByDate.size() == 0) {
+            if (allByDate.isEmpty()) {
                 return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD_FAILED).build(), HttpStatus.OK); // 조회한 게시글이 없을 때
             }else{
                 return new ResponseEntity<>(FindAllByDateResponse.builder().message(Message.FIND_BOARD).findAllBoardDtos(allByDate).build(), HttpStatus.OK); // 조회 게시글 리턴

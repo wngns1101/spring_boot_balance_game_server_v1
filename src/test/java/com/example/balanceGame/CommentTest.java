@@ -3,6 +3,7 @@ package com.example.balanceGame;
 import com.example.balanceGame.controller.http.request.CommentDeleteRequest;
 import com.example.balanceGame.controller.http.request.CommentRegistRequest;
 import com.example.balanceGame.controller.http.request.CommentReportRequest;
+import com.example.balanceGame.repository.CommentRepository;
 import com.example.balanceGame.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,8 @@ import  static org.assertj.core.api.Assertions.assertThat;
 public class CommentTest {
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Test
     public void 댓글등록테스트() {
@@ -30,10 +33,10 @@ public class CommentTest {
         Long userKey = 1L;
 
         // when
-        boolean regist = commentService.regist(commentRegistRequest, userKey);
+        Long regist = commentService.regist(commentRegistRequest, userKey);
 
         // then
-        assertThat(regist).isTrue();
+        assertThat(regist).isEqualTo(commentRepository.findByCommentKey(regist).getCommentKey());
     }
 
     @Test

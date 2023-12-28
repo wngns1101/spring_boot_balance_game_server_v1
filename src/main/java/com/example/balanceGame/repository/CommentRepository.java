@@ -19,14 +19,9 @@ public class CommentRepository {
     private final EntityManager em;
     private final JPAQueryFactory qm;
 
-    public boolean regist(Comment comment) {
-        try {
-            em.persist(comment);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public Long regist(Comment comment) {
+        em.persist(comment);
+        return comment.getCommentKey();
     }
 
     public List<CommentDto> findAllComment(long boardKey) {

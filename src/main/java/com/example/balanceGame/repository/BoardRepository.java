@@ -22,18 +22,13 @@ import static com.example.balanceGame.entity.QBoardGameResult.boardGameResult;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class BoardRepository {
+public class BoardRepository{
     private final EntityManager em;
     private final JPAQueryFactory qm;
 
-    public boolean regist(Board board) {
-        try {
-            em.persist(board);
-            return true;
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public Long regist(Board board) {
+        em.persist(board);
+        return board.getBoardKey();
     }
 
     public Board findByBoardKeyAndUserKey(Long boardKey, long userKey) {

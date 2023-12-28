@@ -30,7 +30,7 @@ public class CommentService {
 
     // 댓글 등록 메서드
     @Transactional
-    public boolean regist(CommentRegistRequest commentRegistRequest, Long userKey) {
+    public Long regist(CommentRegistRequest commentRegistRequest, Long userKey) {
         User user = findUser((userKey)); // 유저 정보 조회
 
         Board board = findBoard(commentRegistRequest.getBoardKey()); // 게시글 정보 조회

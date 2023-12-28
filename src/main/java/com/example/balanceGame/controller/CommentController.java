@@ -26,19 +26,19 @@ import java.security.Principal;
 public class CommentController {
     private final CommentService commentService;
     @PostMapping("/regist")
-    public ResponseEntity regist(@RequestBody CommentRegistRequest commentRegistRequest, Principal principal) {
+    public ResponseEntity<Long> regist(@RequestBody CommentRegistRequest commentRegistRequest, Principal principal) {
         long userKey = Long.parseLong(principal.getName());
         try {
-            boolean regist = commentService.regist(commentRegistRequest, userKey); // 등록 시도
+            Long registCommentKey = commentService.regist(commentRegistRequest, userKey);// 등록 시도
 
-            if (regist) {
-                return new ResponseEntity(Message.REGIST_COMMENT, HttpStatus.OK); // 등록 성공
+            if (registCommentKey != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(registCommentKey); // 등록 성공
             } else {
-                return new ResponseEntity(Message.REGIST_COMMENT_FAILED, HttpStatus.INTERNAL_SERVER_ERROR); // 등록 실패
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // 등록 실패
             }
         } catch (Exception e) {
             log.info(e.getMessage()); // 에러 정보
-            return new ResponseEntity(Message.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR); // 실패 메시지 리턴
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // 실패 메시지 리턴
         }
     }
 
