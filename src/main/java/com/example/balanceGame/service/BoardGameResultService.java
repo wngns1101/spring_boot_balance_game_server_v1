@@ -28,7 +28,7 @@ public class BoardGameResultService {
     // 게임 시작
     @Transactional
     public boolean start(BoardGameStartRequest boardGameStartRequest, Long userKey) {
-        Board board = findBoard(userKey); // 게시글 조회
+        Board board = findBoard(boardGameStartRequest.getBoardKey()); // 게시글 조회
 
         findUser(userKey); // 유저 존재 유무 조회
 
@@ -45,11 +45,13 @@ public class BoardGameResultService {
             board.plusLeftCount();
         } else if (boardGameStartRequest.getResult().equals("right")) {
             type = BoardCountResult.R;
-            board.minusLeftCount();
+            board.plusRightCount();
         }else{
             log.info("zz");
             return false;
         }
+
+        log.info(board.getLeftCount().toString());
 
         BoardGameResult boardGameResult = BoardGameResult
                 .builder()
